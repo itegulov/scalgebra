@@ -66,7 +66,7 @@ trait LowPriorityImplicits {
         while (r < rhs.cols) {
           var k = 0
           while (k < lhs.cols) {
-            answer(r)(c) = semiring.plus(answer(r)(c), semiring.times(lhs(c, k), rhs(k, r)))
+            answer(c)(r) = semiring.plus(answer(c)(r), semiring.times(lhs(c, k), rhs(k, r)))
             k += 1
           }
           r += 1
@@ -127,7 +127,7 @@ object Matrix extends LowPriorityImplicits {
         while (r < rhs.cols) {
           var k = 0
           while (k < lhs.cols) {
-            answer(r)(c) = ring.plus(answer(r)(c), ring.times(lhs(c, k), rhs(k, r)))
+            answer(c)(r) = ring.plus(answer(c)(r), ring.times(lhs(c, k), rhs(k, r)))
             k += 1
           }
           r += 1
