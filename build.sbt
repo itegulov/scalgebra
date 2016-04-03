@@ -6,6 +6,8 @@ scalaVersion := "2.11.8"
 
 resolvers += Resolver.sonatypeRepo("releases")
 
+scalastyleConfig := file("project/scalastyle-config.xml")
+
 val scalaTestVersion = "3.0.0-M15"
 
 libraryDependencies ++= Seq(
