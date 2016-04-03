@@ -2,9 +2,9 @@ package org.scalgebra
 
 import spire.algebra._
 
-import scala.collection.mutable
 import scala.language.experimental.macros
 import scala.language.implicitConversions
+import scala.reflect.ClassTag
 
 /**
   * Represents dense (high ratio of non-zero values in DenseMatrix) matrices
@@ -14,7 +14,7 @@ import scala.language.implicitConversions
   *
   * @author Daniyar Itegulov
   */
-final class DenseMatrix[T](val array: Seq[Seq[T]]) {
+final class DenseMatrix[T](val array: Array[Array[T]]) {
   val rows = array.length
   val cols = if (rows == 0) 0 else array.head.length
 
@@ -29,7 +29,8 @@ final class DenseMatrix[T](val array: Seq[Seq[T]]) {
   }
 
   override def equals(obj: Any): Boolean = obj match {
-    case other: DenseMatrix[T] => array equals other.array
+    case other: DenseMatrix[T] =>
+      this.rows == other.rows && this.cols == other.cols && (array.deep equals other.array.deep)
     case _ => false
   }
 
@@ -38,15 +39,18 @@ final class DenseMatrix[T](val array: Seq[Seq[T]]) {
 
 object DenseMatrix {
 
-  def apply[T](array: Seq[Seq[T]]): DenseMatrix[T] = new DenseMatrix[T](array)
+  def apply[T](array: Array[Array[T]]): DenseMatrix[T] = new DenseMatrix[T](array)
 
-  implicit class DenseMatrixAdditiveMonoidOps[T: AdditiveMonoid](lhs: DenseMatrix[T]) {
+  def zeros[V: ClassTag : AdditiveMonoid](n: Int, m: Int): DenseMatrix[V] =
+    apply(Array.fill(n, m)(implicitly[AdditiveMonoid[V]].zero))
+
+  implicit class DenseMatrixAdditiveMonoidOps[T: ClassTag : AdditiveMonoid](lhs: DenseMatrix[T]) {
     val monoid = implicitly[AdditiveMonoid[T]]
 
     def +(rhs: DenseMatrix[T]): DenseMatrix[T] = {
       assert(lhs.rows == rhs.rows, s"Tried to add matrix with ${rhs.rows} rows to matrix with ${lhs.rows} rows")
       assert(lhs.cols == rhs.cols, s"Tried to add matrix with ${rhs.cols} cols to matrix with ${lhs.cols} cols")
-      val answer = mutable.Seq.fill(lhs.rows, lhs.cols)(monoid.zero)
+      val answer = Array.fill(lhs.rows, lhs.cols)(monoid.zero)
 
       var c = 0
       while (c < lhs.cols) {
@@ -61,13 +65,14 @@ object DenseMatrix {
     }
   }
 
-  implicit class DenseMatrixMultSemigroupAddMonoidOps[T: MultiplicativeSemigroup: AdditiveMonoid](lhs: DenseMatrix[T]) {
+  implicit class DenseMatrixMultSemigroupAddMonoidOps[T: ClassTag : MultiplicativeSemigroup : AdditiveMonoid]
+      (lhs: DenseMatrix[T]) {
     val additiveMonoid = implicitly[AdditiveMonoid[T]]
     val multiplicativeSemigroup = implicitly[MultiplicativeSemigroup[T]]
 
     def *(rhs: DenseMatrix[T]): DenseMatrix[T] = {
       assert(lhs.cols == rhs.rows, s"Tried to multiply matrix with ${lhs.cols} cols on matrix with ${rhs.rows} rows")
-      val answer = mutable.Seq.fill(lhs.rows, rhs.cols)(additiveMonoid.zero)
+      val answer = Array.fill(lhs.rows, rhs.cols)(additiveMonoid.zero)
 
       var c = 0
       while (c < lhs.rows) {
@@ -86,13 +91,13 @@ object DenseMatrix {
     }
   }
 
-  implicit class DenseMatrixAdditiveGroupOps[T: AdditiveGroup](lhs: DenseMatrix[T]) {
+  implicit class DenseMatrixAdditiveGroupOps[T: ClassTag : AdditiveGroup](lhs: DenseMatrix[T]) {
     val group = implicitly[AdditiveGroup[T]]
 
     def -(rhs: DenseMatrix[T]): DenseMatrix[T] = {
       assert(lhs.rows == rhs.rows, s"Tried to subtract matrix with ${rhs.rows} rows from matrix with ${lhs.rows} rows")
       assert(lhs.cols == rhs.cols, s"Tried to subtract matrix with ${rhs.cols} cols from matrix with ${lhs.cols} cols")
-      val answer = mutable.Seq.fill(lhs.rows, lhs.cols)(group.zero)
+      val answer = Array.fill(lhs.rows, lhs.cols)(group.zero)
 
       var c = 0
       while (c < lhs.cols) {
@@ -106,4 +111,5 @@ object DenseMatrix {
       DenseMatrix[T](answer)
     }
   }
+
 }
