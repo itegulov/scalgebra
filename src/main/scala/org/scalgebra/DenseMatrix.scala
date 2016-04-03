@@ -79,6 +79,9 @@ trait LowPriorityImplicits {
 }
 
 object Matrix extends LowPriorityImplicits {
+
+  def apply[T](array: Seq[Seq[T]]): Matrix[T] = new Matrix[T](array)
+
   // TODO: Think about other algebraic primitives which can be used to define Matrix operations
   implicit class MatrixRingOps[T: Ring](lhs: Matrix[T]) {
     val ring = implicitly[Ring[T]]
