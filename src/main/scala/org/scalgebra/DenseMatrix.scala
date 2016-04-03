@@ -7,14 +7,14 @@ import scala.language.experimental.macros
 import scala.language.implicitConversions
 
 /**
-  * Represents dense (high ratio of non-zero values in matrix) matrices
+  * Represents dense (high ratio of non-zero values in DenseMatrix) matrices
   * with some operators implicitly created basing on spire type classes
-  * (e.g. if T has Ring type class, then Matrix[T] can be used with +,
+  * (e.g. if T has Ring type class, then DenseMatrix[T] can be used with +,
   * -, * operators).
   *
   * @author Daniyar Itegulov
   */
-final class Matrix[T](val array: Seq[Seq[T]]) {
+final class DenseMatrix[T](val array: Seq[Seq[T]]) {
   val rows = array.length
   val cols = if (rows == 0) 0 else array.head.length
 
@@ -29,19 +29,19 @@ final class Matrix[T](val array: Seq[Seq[T]]) {
   }
 
   override def equals(obj: scala.Any): Boolean = obj match {
-    case other: Matrix[T] => array == other.array
+    case other: DenseMatrix[T] => array == other.array
     case _ => false
   }
 }
 
-object Matrix {
+object DenseMatrix {
 
-  def apply[T](array: Seq[Seq[T]]): Matrix[T] = new Matrix[T](array)
+  def apply[T](array: Seq[Seq[T]]): DenseMatrix[T] = new DenseMatrix[T](array)
 
-  implicit class MatrixAdditiveMonoidOps[T: AdditiveMonoid](lhs: Matrix[T]) {
+  implicit class DenseMatrixAdditiveMonoidOps[T: AdditiveMonoid](lhs: DenseMatrix[T]) {
     val monoid = implicitly[AdditiveMonoid[T]]
 
-    def +(rhs: Matrix[T]): Matrix[T] = {
+    def +(rhs: DenseMatrix[T]): DenseMatrix[T] = {
       assert(lhs.rows == rhs.rows, s"Tried to add matrix with ${rhs.rows} rows to matrix with ${lhs.rows} rows")
       assert(lhs.cols == rhs.cols, s"Tried to add matrix with ${rhs.cols} cols to matrix with ${lhs.cols} cols")
       val answer = mutable.Seq.fill(lhs.rows, lhs.cols)(monoid.zero)
@@ -55,15 +55,15 @@ object Matrix {
         }
         c += 1
       }
-      new Matrix[T](answer)
+      new DenseMatrix[T](answer)
     }
   }
 
-  implicit class MatrixMultSemigroupAddMonoidOps[T: MultiplicativeSemigroup: AdditiveMonoid](lhs: Matrix[T]) {
+  implicit class DenseMatrixMultSemigroupAddMonoidOps[T: MultiplicativeSemigroup: AdditiveMonoid](lhs: DenseMatrix[T]) {
     val additiveMonoid = implicitly[AdditiveMonoid[T]]
     val multiplicativeSemigroup = implicitly[MultiplicativeSemigroup[T]]
 
-    def *(rhs: Matrix[T]): Matrix[T] = {
+    def *(rhs: DenseMatrix[T]): DenseMatrix[T] = {
       assert(lhs.cols == rhs.rows, s"Tried to multiply matrix with ${lhs.cols} cols on matrix with ${rhs.rows} rows")
       val answer = mutable.Seq.fill(lhs.rows, rhs.cols)(additiveMonoid.zero)
 
@@ -80,14 +80,14 @@ object Matrix {
         }
         c += 1
       }
-      Matrix[T](answer)
+      DenseMatrix[T](answer)
     }
   }
 
-  implicit class MatrixAdditiveGroupOps[T: AdditiveGroup](lhs: Matrix[T]) {
+  implicit class DenseMatrixAdditiveGroupOps[T: AdditiveGroup](lhs: DenseMatrix[T]) {
     val group = implicitly[AdditiveGroup[T]]
 
-    def -(rhs: Matrix[T]): Matrix[T] = {
+    def -(rhs: DenseMatrix[T]): DenseMatrix[T] = {
       assert(lhs.rows == rhs.rows, s"Tried to subtract matrix with ${rhs.rows} rows from matrix with ${lhs.rows} rows")
       assert(lhs.cols == rhs.cols, s"Tried to subtract matrix with ${rhs.cols} cols from matrix with ${lhs.cols} cols")
       val answer = mutable.Seq.fill(lhs.rows, lhs.cols)(group.zero)
@@ -101,7 +101,7 @@ object Matrix {
         }
         c += 1
       }
-      Matrix[T](answer)
+      DenseMatrix[T](answer)
     }
   }
 }
