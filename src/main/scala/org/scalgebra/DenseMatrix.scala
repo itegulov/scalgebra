@@ -1,6 +1,6 @@
 package org.scalgebra
 
-import spire.algebra.{AdditiveMonoid, _}
+import spire.algebra._
 
 import scala.collection.mutable
 import scala.language.experimental.macros
@@ -28,10 +28,12 @@ final class DenseMatrix[T](val array: Seq[Seq[T]]) {
     array(row)(col)
   }
 
-  override def equals(obj: scala.Any): Boolean = obj match {
-    case other: DenseMatrix[T] => array == other.array
+  override def equals(obj: Any): Boolean = obj match {
+    case other: DenseMatrix[T] => array equals other.array
     case _ => false
   }
+
+  override def hashCode(): Int = array.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
 }
 
 object DenseMatrix {
