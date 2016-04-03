@@ -1,6 +1,6 @@
 package org.scalgebra
 
-import spire.algebra._
+import spire.algebra.{AdditiveMonoid, _}
 
 import scala.collection.mutable
 import scala.language.experimental.macros
@@ -34,41 +34,23 @@ final class Matrix[T](val array: Seq[Seq[T]]) {
   }
 }
 
-trait LowPriorityImplicits {
-  // Semiring is weaker than Ring, so we should use MatrixRingOps if we can and try to use MatrixSemiringOps otherwise
-  implicit class MatrixSemiringOps[T: Semiring](lhs: Matrix[T]) {
-    val semiring = implicitly[Semiring[T]]
+object Matrix {
+
+  def apply[T](array: Seq[Seq[T]]): Matrix[T] = new Matrix[T](array)
+
+  implicit class MatrixAdditiveMonoidOps[T: AdditiveMonoid](lhs: Matrix[T]) {
+    val monoid = implicitly[AdditiveMonoid[T]]
 
     def +(rhs: Matrix[T]): Matrix[T] = {
       assert(lhs.rows == rhs.rows, s"Tried to add matrix with ${rhs.rows} rows to matrix with ${lhs.rows} rows")
       assert(lhs.cols == rhs.cols, s"Tried to add matrix with ${rhs.cols} cols to matrix with ${lhs.cols} cols")
-      val answer = mutable.Seq.fill(lhs.rows, lhs.cols)(semiring.zero)
+      val answer = mutable.Seq.fill(lhs.rows, lhs.cols)(monoid.zero)
 
       var c = 0
       while (c < lhs.cols) {
         var r = 0
         while (r < lhs.rows) {
-          answer(r)(c) = semiring.plus(lhs(r, c), rhs(r, c))
-          r += 1
-        }
-        c += 1
-      }
-      new Matrix[T](answer)
-    }
-
-    def *(rhs: Matrix[T]): Matrix[T] = {
-      assert(lhs.cols == rhs.rows, s"Tried to multiply matrix with ${lhs.cols} cols on matrix with ${rhs.rows} rows")
-      val answer = mutable.Seq.fill(lhs.rows, rhs.cols)(semiring.zero)
-
-      var c = 0
-      while (c < lhs.rows) {
-        var r = 0
-        while (r < rhs.cols) {
-          var k = 0
-          while (k < lhs.cols) {
-            answer(c)(r) = semiring.plus(answer(c)(r), semiring.times(lhs(c, k), rhs(k, r)))
-            k += 1
-          }
+          answer(r)(c) = monoid.plus(lhs(r, c), rhs(r, c))
           r += 1
         }
         c += 1
@@ -76,53 +58,14 @@ trait LowPriorityImplicits {
       new Matrix[T](answer)
     }
   }
-}
 
-object Matrix extends LowPriorityImplicits {
-
-  def apply[T](array: Seq[Seq[T]]): Matrix[T] = new Matrix[T](array)
-
-  // TODO: Think about other algebraic primitives which can be used to define Matrix operations
-  implicit class MatrixRingOps[T: Ring](lhs: Matrix[T]) {
-    val ring = implicitly[Ring[T]]
-
-    def +(rhs: Matrix[T]): Matrix[T] = {
-      assert(lhs.rows == rhs.rows, s"Tried to add matrix with ${rhs.rows} rows to matrix with ${lhs.rows} rows")
-      assert(lhs.cols == rhs.cols, s"Tried to add matrix with ${rhs.cols} cols to matrix with ${lhs.cols} cols")
-      val answer = mutable.Seq.fill(lhs.rows, lhs.cols)(ring.zero)
-
-      var c = 0
-      while (c < lhs.cols) {
-        var r = 0
-        while (r < lhs.rows) {
-          answer(r)(c) = ring.plus(lhs(r, c), rhs(r, c))
-          r += 1
-        }
-        c += 1
-      }
-      new Matrix[T](answer)
-    }
-
-    def -(rhs: Matrix[T]): Matrix[T] = {
-      assert(lhs.rows == rhs.rows, s"Tried to subtract matrix with ${rhs.rows} rows from matrix with ${lhs.rows} rows")
-      assert(lhs.cols == rhs.cols, s"Tried to subtract matrix with ${rhs.cols} cols from matrix with ${lhs.cols} cols")
-      val answer = mutable.Seq.fill(lhs.rows, lhs.cols)(ring.zero)
-
-      var c = 0
-      while (c < lhs.cols) {
-        var r = 0
-        while (r < lhs.rows) {
-          answer(r)(c) = ring.minus(lhs(r, c), rhs(r, c))
-          r += 1
-        }
-        c += 1
-      }
-      new Matrix[T](answer)
-    }
+  implicit class MatrixMultSemigroupAddMonoidOps[T: MultiplicativeSemigroup: AdditiveMonoid](lhs: Matrix[T]) {
+    val additiveMonoid = implicitly[AdditiveMonoid[T]]
+    val multiplicativeSemigroup = implicitly[MultiplicativeSemigroup[T]]
 
     def *(rhs: Matrix[T]): Matrix[T] = {
       assert(lhs.cols == rhs.rows, s"Tried to multiply matrix with ${lhs.cols} cols on matrix with ${rhs.rows} rows")
-      val answer = mutable.Seq.fill(lhs.rows, rhs.cols)(ring.zero)
+      val answer = mutable.Seq.fill(lhs.rows, rhs.cols)(additiveMonoid.zero)
 
       var c = 0
       while (c < lhs.rows) {
@@ -130,14 +73,35 @@ object Matrix extends LowPriorityImplicits {
         while (r < rhs.cols) {
           var k = 0
           while (k < lhs.cols) {
-            answer(c)(r) = ring.plus(answer(c)(r), ring.times(lhs(c, k), rhs(k, r)))
+            answer(c)(r) = additiveMonoid.plus(answer(c)(r), multiplicativeSemigroup.times(lhs(c, k), rhs(k, r)))
             k += 1
           }
           r += 1
         }
         c += 1
       }
-      new Matrix[T](answer)
+      Matrix[T](answer)
+    }
+  }
+
+  implicit class MatrixAdditiveGroupOps[T: AdditiveGroup](lhs: Matrix[T]) {
+    val group = implicitly[AdditiveGroup[T]]
+
+    def -(rhs: Matrix[T]): Matrix[T] = {
+      assert(lhs.rows == rhs.rows, s"Tried to subtract matrix with ${rhs.rows} rows from matrix with ${lhs.rows} rows")
+      assert(lhs.cols == rhs.cols, s"Tried to subtract matrix with ${rhs.cols} cols from matrix with ${lhs.cols} cols")
+      val answer = mutable.Seq.fill(lhs.rows, lhs.cols)(group.zero)
+
+      var c = 0
+      while (c < lhs.cols) {
+        var r = 0
+        while (r < lhs.rows) {
+          answer(r)(c) = group.minus(lhs(r, c), rhs(r, c))
+          r += 1
+        }
+        c += 1
+      }
+      Matrix[T](answer)
     }
   }
 }
