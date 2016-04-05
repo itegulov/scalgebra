@@ -1,4 +1,4 @@
-Scalgebra
+Scalgebra [![Build Status](https://travis-ci.org/itegulov/scalgebra.svg?branch=master)](https://travis-ci.org/itegulov/scalgebra)
 ====
 Overview
 --------
