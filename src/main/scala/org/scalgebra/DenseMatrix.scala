@@ -14,27 +14,19 @@ import scala.reflect.ClassTag
   *
   * @author Daniyar Itegulov
   */
-final class DenseMatrix[T](val array: Array[Array[T]]) {
-  val rows = array.length
-  val cols = if (rows == 0) 0 else array.head.length
+final class DenseMatrix[T](val array: Array[Array[T]]) extends Matrix[T] {
+  override val rows = array.length
+  override val cols = if (rows == 0) 0 else array.head.length
 
   assert(array.forall(row => row.length == cols), "Not all rows have equal number of columns")
 
-  def apply(i: Int, j: Int): T = {
+  override def apply(i: Int, j: Int): T = {
     assert(-rows to rows contains i, s"Tried to get $i-th row in matrix with $rows rows")
     assert(-cols to cols contains j, s"Tried to get $j-th col in matrix with $cols cols")
     val row = if (i < 0) rows + i else i
     val col = if (j < 0) cols + j else j
     array(row)(col)
   }
-
-  override def equals(obj: Any): Boolean = obj match {
-    case other: DenseMatrix[T] =>
-      this.rows == other.rows && this.cols == other.cols && (array.deep equals other.array.deep)
-    case _ => false
-  }
-
-  override def hashCode(): Int = array.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
 }
 
 object DenseMatrix {
