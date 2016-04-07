@@ -14,5 +14,6 @@ libraryDependencies ++= Seq(
   "org.spire-math" %% "spire" % "0.11.0",
   "org.typelevel" %% "cats" % "0.4.1",
   "org.scalactic" %% "scalactic" % scalaTestVersion,
-  "org.scalatest" %% "scalatest" % scalaTestVersion % "test"
+  "org.scalatest" %% "scalatest" % scalaTestVersion % "test",
+  "org.scalacheck" %% "scalacheck" % "1.13.0" % "test"
 )
