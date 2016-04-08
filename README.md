@@ -1,4 +1,4 @@
-Scalgebra [![Build Status](https://travis-ci.org/itegulov/scalgebra.svg?branch=master)](https://travis-ci.org/itegulov/scalgebra) [![Coverage Status](https://coveralls.io/repos/github/itegulov/scalgebra/badge.svg?branch=master)](https://coveralls.io/github/itegulov/scalgebra?branch=master)
+Scalgebra [![Build Status](https://travis-ci.org/itegulov/scalgebra.svg?branch=master)](https://travis-ci.org/itegulov/scalgebra) [![Coverage status](https://codecov.io/github/itegulov/scalgebra/coverage.svg?branch=master)](https://codecov.io/github/itegulov/scalgebra?branch=master)
 ====
 Overview
 --------
