@@ -4,3 +4,10 @@ scala:
    - 2.11.8
 script: "sbt clean coverage test"
 after_success: "sbt coverageReport && bash <(curl -s https://codecov.io/bash)"
+
+cache:
+  directories:
+  - $HOME/.sbt
+  - $HOME/.ivy2/cache
+
+sudo: false
