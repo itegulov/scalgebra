@@ -14,15 +14,37 @@ class DenseMatrixProps extends PropSpec with Matchers with GeneratorDrivenProper
     forAll((matrix: DenseMatrix[Int]) => {
       for (i <- 0 until matrix.rows)
         for (j <- 0 until matrix.cols)
-          matrix(i, j) shouldBe matrix(i, j)
+          matrix(i, j)
     })
   }
 
   property("has negative indexed elements") {
     forAll { (matrix: DenseMatrix[Int]) =>
-      for (i <- 0 until matrix.rows)
-        for (j <- 0 until matrix.cols)
-          matrix(-i, -j) shouldBe matrix(matrix.rows - 1 - i, matrix.cols - 1 - j)
+      for (i <- 1 until matrix.rows)
+        for (j <- 1 until matrix.cols)
+          matrix(-i, -j) shouldBe matrix(matrix.rows - i, matrix.cols - j)
+    }
+  }
+
+  property("has no out of bound elements") {
+    forAll { (matrix: DenseMatrix[Int]) =>
+      for (i <- 0 until matrix.rows) {
+        intercept[IndexOutOfBoundsException] {
+          matrix(i, matrix.cols)
+        }
+        intercept[IndexOutOfBoundsException] {
+          matrix(i, -matrix.cols)
+        }
+      }
+
+      for (j <- 0 until matrix.cols) {
+        intercept[IndexOutOfBoundsException] {
+          matrix(matrix.rows, j)
+        }
+        intercept[IndexOutOfBoundsException] {
+          matrix(-matrix.rows, j)
+        }
+      }
     }
   }
 

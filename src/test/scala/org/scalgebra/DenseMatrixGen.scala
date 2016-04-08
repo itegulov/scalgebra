@@ -34,8 +34,8 @@ object DenseMatrixGen {
     Arbitrary {
       def genSemiringMatrix: Gen[DenseMatrix[T]] =
         for {
-          cols <- Arbitrary.arbitrary[Int] suchThat (_ < 100)
-          rows <- Arbitrary.arbitrary[Int] suchThat (_ < 100)
+          cols <- Gen.choose(0, 100)
+          rows <- Gen.choose(0, 100)
           matrix <- Gen.containerOfN[Array, Array[T]](rows, Gen.containerOfN[Array, T](cols, Arbitrary.arbitrary[T]))
         } yield DenseMatrix(matrix)
 
