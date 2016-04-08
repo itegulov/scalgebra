@@ -15,5 +15,5 @@ libraryDependencies ++= Seq(
   "org.typelevel" %% "cats" % "0.4.1",
   "org.scalactic" %% "scalactic" % scalaTestVersion,
   "org.scalatest" %% "scalatest" % scalaTestVersion % "test",
-  "org.scalacheck" %% "scalacheck" % "1.13.0" % "test"
+  "org.scalacheck" %% "scalacheck" % "1.12.5" % "test"
 )
