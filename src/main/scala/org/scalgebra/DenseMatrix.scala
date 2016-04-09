@@ -21,8 +21,12 @@ final class DenseMatrix[T](val array: Array[Array[T]]) extends Matrix[T] {
   assert(array.forall(row => row.length == cols), "Not all rows have equal number of columns")
 
   override def apply(i: Int, j: Int): T = {
-    assert(-rows to rows contains i, s"Tried to get $i-th row in matrix with $rows rows")
-    assert(-cols to cols contains j, s"Tried to get $j-th col in matrix with $cols cols")
+    if (i <= -rows || i >= rows) {
+      throw new IndexOutOfBoundsException(s"Tried to get $i-th row in matrix with $rows rows")
+    }
+    if (j <= -cols || j >= cols) {
+      throw new IndexOutOfBoundsException(s"Tried to get $j-th col in matrix with $cols cols")
+    }
     val row = if (i < 0) rows + i else i
     val col = if (j < 0) cols + j else j
     array(row)(col)
