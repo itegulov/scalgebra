@@ -30,15 +30,15 @@ object DenseMatrixGen {
     }
   }
 
-  implicit def arbitrarySemiringMatrix[T: Arbitrary : Semiring : ClassTag]: Arbitrary[DenseMatrix[T]] =
-    Arbitrary {
-      def genSemiringMatrix: Gen[DenseMatrix[T]] =
-        for {
-          cols <- Gen.choose(0, 100)
-          rows <- Gen.choose(0, 100)
-          matrix <- Gen.containerOfN[Array, Array[T]](rows, Gen.containerOfN[Array, T](cols, Arbitrary.arbitrary[T]))
-        } yield DenseMatrix(matrix)
+  def genSemiringDenseMatrix[T: Arbitrary : Semiring : ClassTag]: Gen[DenseMatrix[T]] =
+    for {
+      cols <- Gen.choose(0, 100)
+      rows <- Gen.choose(0, 100)
+      matrix <- Gen.containerOfN[Array, Array[T]](rows, Gen.containerOfN[Array, T](cols, Arbitrary.arbitrary[T]))
+    } yield DenseMatrix(matrix)
 
-      genSemiringMatrix
+  implicit def arbitrarySemiringDenseMatrix[T: Arbitrary : Semiring : ClassTag]: Arbitrary[DenseMatrix[T]] =
+    Arbitrary {
+      genSemiringDenseMatrix
     }
 }

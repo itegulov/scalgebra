@@ -2,14 +2,15 @@ package org.scalgebra
 
 import org.scalatest._
 import org.scalatest.prop._
-import org.scalgebra.DenseMatrixGen._
 import spire.implicits.IntAlgebra
+
+import org.scalgebra.DenseMatrixGen._
+import org.scalgebra.DenseMatrix._
 
 /**
   * @author Daniyar Itegulov
   */
 class DenseMatrixProps extends PropSpec with Matchers with GeneratorDrivenPropertyChecks {
-
   property("has positive indexed elements") {
     forAll((matrix: DenseMatrix[Int]) => {
       for (i <- 0 until matrix.rows)
@@ -48,4 +49,10 @@ class DenseMatrixProps extends PropSpec with Matchers with GeneratorDrivenProper
     }
   }
 
+  property("can be added with zero matrix") {
+    forAll((matrix: DenseMatrix[Int]) => {
+      matrix + DenseMatrix.zeros(matrix.rows, matrix.cols) shouldBe matrix
+      DenseMatrix.zeros(matrix.rows, matrix.cols) + matrix shouldBe matrix
+    })
+  }
 }
