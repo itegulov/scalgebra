@@ -52,6 +52,17 @@ trait Vector[T] {
     result
   }
 
+
+  override def toString: String = {
+    val sb = new StringBuilder()
+    for (i <- 0 until length) {
+      sb += (if (i == 0) '[' else ' ')
+      sb ++= apply(i).toString
+      sb += (if (i == length - 1) ']' else '\n')
+    }
+    sb.toString
+  }
+
   override def equals(obj: Any): Boolean = obj match {
     case v: Vector[_] => this.length == v.length && (valuesIterator sameElements v.valuesIterator)
     case _ => false
