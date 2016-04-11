@@ -1,6 +1,6 @@
 package org.scalgebra
 
-import spire.algebra._
+import algebra.ring._
 
 import scala.reflect.ClassTag
 

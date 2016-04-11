@@ -12,7 +12,7 @@ There is no public distribution yet. Just wait for a little longer.
 Quick start
 -----------
 ```scala
-import spire.implicits.IntAlgebra
+import algebra.std.int._
 import org.scalgebra.DenseMatrix
 import org.scalgebra.DenseMatrix._
 
@@ -28,7 +28,7 @@ Documentation
 There is no proper documentation for now, because library is too
 incomplete for now.
 
-We highly depend on [Spire](https://github.com/non/spire) type classes
+We highly depend on [algebra](https://github.com/non/algebra) type classes
 and try to generate proper operations basing on algebraic structures
 available for type instance (e.g. you can't subtract `Matrix[UInt]`
 because `UInt` has a `Semiring[UInt]`, but not `Ring[UInt]`).

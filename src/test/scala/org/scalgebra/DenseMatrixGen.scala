@@ -1,7 +1,7 @@
 package org.scalgebra
 
 import org.scalacheck._
-import spire.algebra._
+import algebra.ring._
 
 import scala.reflect.ClassTag
 

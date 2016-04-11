@@ -1,7 +1,7 @@
 package org.scalgebra
 
 import org.scalacheck.Arbitrary
-import spire.algebra.Semiring
+import algebra.ring.Semiring
 
 import scala.reflect.ClassTag
 

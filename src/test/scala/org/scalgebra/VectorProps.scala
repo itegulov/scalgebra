@@ -2,7 +2,7 @@ package org.scalgebra
 
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalatest._
-import spire.implicits.IntAlgebra
+import algebra.std.int._
 
 import org.scalgebra.VectorGen._
 

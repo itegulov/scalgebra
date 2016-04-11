@@ -9,9 +9,11 @@ resolvers += Resolver.sonatypeRepo("releases")
 scalastyleConfig := file("project/scalastyle-config.xml")
 
 val scalaTestVersion = "3.0.0-M15"
+val algebraVersion = "0.3.1"
 
 libraryDependencies ++= Seq(
-  "org.spire-math" %% "spire" % "0.11.0",
+  "org.spire-math" %% "algebra" % algebraVersion,
+  "org.spire-math" %% "algebra-std" % algebraVersion,
   "org.typelevel" %% "cats" % "0.4.1",
   "org.scalactic" %% "scalactic" % scalaTestVersion,
   "org.scalatest" %% "scalatest" % scalaTestVersion % "test",

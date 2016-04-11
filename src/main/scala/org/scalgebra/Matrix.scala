@@ -1,6 +1,6 @@
 package org.scalgebra
 
-import spire.algebra.AdditiveMonoid
+import algebra.ring.AdditiveMonoid
 
 import scala.reflect.ClassTag
 
