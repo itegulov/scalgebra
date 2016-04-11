@@ -31,4 +31,22 @@ class MatrixProps extends PropSpec with Matchers with GeneratorDrivenPropertyChe
       matrix.keysIterator.size shouldBe matrix.size
     })
   }
+
+  property("string representation contains all elements") {
+    forAll((matrix: Matrix[Int]) => {
+      val representation = matrix.toString
+      for (i <- 0 until matrix.rows)
+        for (j <- 0 until matrix.cols)
+          representation.contains(matrix(i, j).toString)
+    })
+  }
+
+  property("conversion to 2d array contains all elements") {
+    forAll((matrix: Matrix[Int]) => {
+      val array = matrix.to2DArray
+      for (i <- 0 until matrix.rows)
+        for (j <- 0 until matrix.cols)
+          matrix(i, j) shouldBe array(i)(j)
+    })
+  }
 }
