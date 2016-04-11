@@ -13,7 +13,13 @@ import scala.reflect.ClassTag
   * @author Daniyar Itegulov
   */
 final class DenseVector[T](val array: Array[T]) extends Vector[T] {
-  override def apply(i: Int): T = array(i)
+  override def apply(i: Int): T = {
+    if (i <= -length || i >= length) {
+      throw new IndexOutOfBoundsException(s"Tried to get $i-th element in vector with $length elements")
+    }
+    val index = if (i < 0) length + i else i
+    array(index)
+  }
 
   override def length: Int = array.length
 }
