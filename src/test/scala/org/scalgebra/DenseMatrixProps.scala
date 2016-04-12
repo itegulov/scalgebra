@@ -5,7 +5,6 @@ import org.scalatest.prop._
 import algebra.std.int._
 
 import org.scalgebra.DenseMatrixGen._
-import org.scalgebra.DenseMatrix._
 
 /**
   * @author Daniyar Itegulov

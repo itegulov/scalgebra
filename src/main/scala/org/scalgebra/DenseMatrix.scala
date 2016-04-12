@@ -33,13 +33,7 @@ final class DenseMatrix[T](val array: Array[Array[T]]) extends Matrix[T] {
   }
 }
 
-object DenseMatrix {
-
-  def apply[T](array: Array[Array[T]]): DenseMatrix[T] = new DenseMatrix[T](array)
-
-  def zeros[V: ClassTag : AdditiveMonoid](n: Int, m: Int): DenseMatrix[V] =
-    apply(Array.fill(n, m)(implicitly[AdditiveMonoid[V]].zero))
-
+trait DenseMatrixOps {
   implicit class DenseMatrixAdditiveMonoidOps[T: ClassTag : AdditiveMonoid](lhs: DenseMatrix[T]) {
     val monoid = implicitly[AdditiveMonoid[T]]
 
@@ -62,7 +56,7 @@ object DenseMatrix {
   }
 
   implicit class DenseMatrixMultSemigroupAddMonoidOps[T: ClassTag : MultiplicativeSemigroup : AdditiveMonoid]
-      (lhs: DenseMatrix[T]) {
+  (lhs: DenseMatrix[T]) {
     val additiveMonoid = implicitly[AdditiveMonoid[T]]
     val multiplicativeSemigroup = implicitly[MultiplicativeSemigroup[T]]
 
@@ -107,5 +101,11 @@ object DenseMatrix {
       DenseMatrix[T](answer)
     }
   }
+}
 
+object DenseMatrix {
+  def apply[T](array: Array[Array[T]]): DenseMatrix[T] = new DenseMatrix[T](array)
+
+  def zeros[V: ClassTag : AdditiveMonoid](n: Int, m: Int): DenseMatrix[V] =
+    apply(Array.fill(n, m)(implicitly[AdditiveMonoid[V]].zero))
 }

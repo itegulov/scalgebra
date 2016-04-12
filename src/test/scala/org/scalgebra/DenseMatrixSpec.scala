@@ -1,7 +1,6 @@
 package org.scalgebra
 
 import org.scalatest._
-import org.scalgebra.DenseMatrix._
 
 class DenseMatrixSpec extends FlatSpec with Matchers {
 

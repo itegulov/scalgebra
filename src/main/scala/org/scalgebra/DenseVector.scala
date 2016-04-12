@@ -24,13 +24,7 @@ final class DenseVector[T](val array: Array[T]) extends Vector[T] {
   override def length: Int = array.length
 }
 
-object DenseVector {
-  def apply[V](values: Array[V]): DenseVector[V] =
-    new DenseVector[V](values)
-
-  def zeros[V: ClassTag: AdditiveMonoid](length: Int): DenseVector[V] =
-    apply(Array.fill(length)(implicitly[AdditiveMonoid[V]].zero))
-
+trait DenseVectorOps {
   implicit class DenseVectorAdditiveMonoidOps[T: ClassTag : AdditiveMonoid](lhs: DenseVector[T]) {
     val monoid = implicitly[AdditiveMonoid[T]]
 
@@ -64,4 +58,12 @@ object DenseVector {
   }
 
   // TODO: think about multiplication with matrix
+}
+
+object DenseVector {
+  def apply[V](values: Array[V]): DenseVector[V] =
+    new DenseVector[V](values)
+
+  def zeros[V: ClassTag: AdditiveMonoid](length: Int): DenseVector[V] =
+    apply(Array.fill(length)(implicitly[AdditiveMonoid[V]].zero))
 }
