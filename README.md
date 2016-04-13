@@ -14,7 +14,6 @@ Quick start
 ```scala
 import algebra.std.int._
 import org.scalgebra.DenseMatrix
-import org.scalgebra.DenseMatrix._
 
 val a = DenseMatrix[Int](Array(Array(1, 2), Array(3, 4)))
 val b = DenseMatrix[Int](Array(Array(5, 6), Array(7, 8)))
@@ -30,8 +29,8 @@ incomplete for now.
 
 We highly depend on [algebra](https://github.com/non/algebra) type classes
 and try to generate proper operations basing on algebraic structures
-available for type instance (e.g. you can't subtract `Matrix[UInt]`
-because `UInt` has a `Semiring[UInt]`, but not `Ring[UInt]`).
+available for type instance (e.g. you can't subtract `Matrix[Set[Int]]`
+because `Set[Int]` has a `Semiring[Set[Int]]`, but not `Ring[Set[Int]]`).
 
 Basic types
 -----------
