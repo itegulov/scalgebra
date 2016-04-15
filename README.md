@@ -22,6 +22,18 @@ println(a - b)
 println(a * b)
 ```
 
+```scala
+import algebra.std.set._
+import org.scalgebra.DenseMatrix
+
+val a = DenseMatrix[Set[Int]](Array(Array(Set(1), Set(2)), Array(Set(3), Set(4))))
+val b = DenseMatrix[Set[Int]](Array(Array(Set(5), Set(6)), Array(Set(7), Set(8))))
+println(a + b)
+// Next string doesn't compile because Set doesn't have AdditiveGroup type class
+// println(a - b)
+println(a * b)
+```
+
 Documentation
 -------------
 There is no proper documentation for now, because library is too
@@ -30,7 +42,7 @@ incomplete for now.
 We highly depend on [algebra](https://github.com/non/algebra) type classes
 and try to generate proper operations basing on algebraic structures
 available for type instance (e.g. you can't subtract `Matrix[Set[Int]]`
-because `Set[Int]` has a `Semiring[Set[Int]]`, but not `Ring[Set[Int]]`).
+because `Set[Int]` has a `AdditiveMonoid[Set[Int]]`, but not `AdditiveGroup[Set[Int]]`).
 
 Basic types
 -----------
@@ -41,5 +53,9 @@ Some basic types are:
                  isn't subtype of `DenseMatrix` for now
  * `Tensor` isn't implemented yet, but is planned as a part
             of linear algebra hierarchy.
+
+Roadmap
+-------
+We are going to add some neat DSL for creating matrices and vectors as a next step.
 
 Copyright 2016 Daniyar Itegulov
