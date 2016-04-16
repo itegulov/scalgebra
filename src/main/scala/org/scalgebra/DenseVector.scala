@@ -25,6 +25,7 @@ final class DenseVector[T](val array: Array[T]) extends Vector[T] {
 }
 
 trait DenseVectorOps {
+
   implicit class DenseVectorAdditiveMonoidOps[T: ClassTag : AdditiveMonoid](lhs: DenseVector[T]) {
     val monoid = implicitly[AdditiveMonoid[T]]
 
@@ -64,6 +65,8 @@ object DenseVector {
   def apply[V](values: Array[V]): DenseVector[V] =
     new DenseVector[V](values)
 
-  def zeros[V: ClassTag: AdditiveMonoid](length: Int): DenseVector[V] =
+  def apply[V: ClassTag](values: V*): DenseVector[V] = apply(values.toArray)
+
+  def zeros[V: ClassTag : AdditiveMonoid](length: Int): DenseVector[V] =
     apply(Array.fill(length)(implicitly[AdditiveMonoid[V]].zero))
 }
