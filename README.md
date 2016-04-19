@@ -56,6 +56,6 @@ Some basic types are:
 
 Roadmap
 -------
-We are going to add some neat DSL for creating matrices and vectors as a next step.
+Enrich matrix api: add rows looping, folds, reduces and other fp stuff
 
 Copyright 2016 Daniyar Itegulov
