@@ -15,8 +15,8 @@ Quick start
 import algebra.std.int._
 import org.scalgebra.DenseMatrix
 
-val a = DenseMatrix[Int](Array(Array(1, 2), Array(3, 4)))
-val b = DenseMatrix[Int](Array(Array(5, 6), Array(7, 8)))
+val a: DenseMatrix[Int] = DenseMatrix((1, 2), (3, 4))
+val b: DenseMatrix[Int] = DenseMatrix((5, 6), (7, 8))
 println(a + b)
 println(a - b)
 println(a * b)
@@ -26,8 +26,8 @@ println(a * b)
 import algebra.std.set._
 import org.scalgebra.DenseMatrix
 
-val a = DenseMatrix[Set[Int]](Array(Array(Set(1), Set(2)), Array(Set(3), Set(4))))
-val b = DenseMatrix[Set[Int]](Array(Array(Set(5), Set(6)), Array(Set(7), Set(8))))
+val a: DenseMatrix[Set[Int]] = DenseMatrix((Set(1), Set(2)), (Set(3), Set(4)))
+val b: DenseMatrix[Set[Int]] = DenseMatrix((Set(5), Set(6)), (Set(7), Set(8)))
 println(a + b)
 // Next string doesn't compile because Set doesn't have AdditiveGroup type class
 // println(a - b)
