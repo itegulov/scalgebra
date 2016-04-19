@@ -1,6 +1,7 @@
 package org.scalgebra
 
 import algebra.ring._
+import org.scalgebra.util.Row
 
 import scala.language.experimental.macros
 import scala.language.implicitConversions
@@ -51,7 +52,7 @@ trait DenseMatrixOps {
         }
         c += 1
       }
-      new DenseMatrix[T](answer)
+      DenseMatrix(answer)
     }
   }
 
@@ -77,7 +78,7 @@ trait DenseMatrixOps {
         }
         c += 1
       }
-      DenseMatrix[T](answer)
+      DenseMatrix(answer)
     }
   }
 
@@ -98,13 +99,23 @@ trait DenseMatrixOps {
         }
         c += 1
       }
-      DenseMatrix[T](answer)
+      DenseMatrix(answer)
     }
   }
 }
 
 object DenseMatrix {
-  def apply[T](array: Array[Array[T]]): DenseMatrix[T] = new DenseMatrix[T](array)
+  def apply[V: ClassTag : AdditiveMonoid, R](rows: Array[R])(implicit r: Row[R, V]): DenseMatrix[V] =
+    apply(rows: _*)
+
+  def apply[R, V: ClassTag : AdditiveMonoid](rows: R*)(implicit r: Row[R, V]): DenseMatrix[V] = {
+    val rowsCount = rows.length
+    val colsCount = if (rows.isEmpty) 0 else r.length(rows(0))
+    assert(rows.forall(row => r.length(row) == colsCount), "Not all rows have equal number of columns")
+    val array = Array.fill(rowsCount, colsCount)(implicitly[AdditiveMonoid[V]].zero)
+    rows.zipWithIndex.foreach({ case (row, i) => r.foreach(row, (v, j) => array(i)(j) = v)})
+    new DenseMatrix[V](array)
+  }
 
   def zeros[V: ClassTag : AdditiveMonoid](n: Int, m: Int): DenseMatrix[V] =
     apply(Array.fill(n, m)(implicitly[AdditiveMonoid[V]].zero))
