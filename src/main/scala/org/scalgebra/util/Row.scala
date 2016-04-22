@@ -16,7 +16,14 @@ object Row {
     def foreach(row: Array[V], f: (V, Int) => Unit) =
       row.zipWithIndex.foreach(f.tupled)
 
-    def length(arr: Array[V]) = arr.length
+    def length(row: Array[V]) = row.length
+  }
+
+  implicit def rowFromSeq[V]: Row[Seq[V], V] = new Row[Seq[V], V] {
+    def foreach(row: Seq[V], f: (V, Int) => Unit) =
+      row.zipWithIndex.foreach(f.tupled)
+
+    def length(row: Seq[V]) = row.length
   }
 
   // TODO: add construction from other collections
@@ -38,5 +45,15 @@ object Row {
     def length(tup : (V, V)) = 2
   }
 
-  // TODO: generate code for other tuples
+  implicit def rowFromTuple3[V] : Row[(V, V, V), V] = new Row[(V, V, V), V] {
+    def foreach(tup: (V, V, V), f: (V, Int) => Unit) = {
+      f(tup._1, 0)
+      f(tup._2, 1)
+      f(tup._3, 2)
+    }
+
+    def length(tup : (V, V, V)) = 3
+  }
+
+  // TODO: use shapeless with arity abstraction to generate rows from TupleN[V]
 }
