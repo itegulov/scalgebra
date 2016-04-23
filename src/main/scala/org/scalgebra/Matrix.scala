@@ -29,6 +29,24 @@ trait Matrix[T] {
   def keysIterator: Iterator[(Int, Int)] =
     for (i <- Iterator.range(0, rows); j <- Iterator.range(0, cols)) yield (i, j)
 
+  // Collection operations
+
+  def exists(predicate: T => Boolean): Boolean = valuesIterator.exists(predicate)
+
+  def forall(predicate: T => Boolean): Boolean = valuesIterator.forall(predicate)
+
+  def fold[U >: T](z: U)(op: (U, U) => U): U = valuesIterator.fold(z)(op)
+
+  def foldLeft[U >: T](z: U)(op: (U, T) => U): U = valuesIterator.foldLeft(z)(op)
+
+  def foldRight[U >: T](z: U)(op: (T, U) => U): U = valuesIterator.foldRight(z)(op)
+
+  def reduce[U >: T](op: (U, U) => U): U = valuesIterator.reduce(op)
+
+  def reduceLeft[U >: T](op: (U, T) => U): U = valuesIterator.reduceLeft(op)
+
+  def reduceRight[U >: T](op: (T, U) => U): U = valuesIterator.reduceRight(op)
+
   // Conversions
 
   def to2DArray(implicit classTag: ClassTag[T]): Array[Array[T]] = {
