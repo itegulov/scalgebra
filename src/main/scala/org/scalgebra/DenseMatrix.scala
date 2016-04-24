@@ -19,7 +19,9 @@ final class DenseMatrix[T](val array: Array[Array[T]]) extends Matrix[T] {
   override val rows = array.length
   override val cols = if (rows == 0) 0 else array.head.length
 
-  assert(array.forall(row => row.length == cols), "Not all rows have equal number of columns")
+  if (!array.forall(row => row.length == cols)) {
+    throw new IllegalArgumentException("Not all rows have equal number of columns")
+  }
 
   override def apply(i: Int, j: Int): T = {
     if (i <= -rows || i >= rows) {
@@ -39,8 +41,16 @@ trait DenseMatrixOps {
     val monoid = implicitly[AdditiveMonoid[T]]
 
     def +(rhs: DenseMatrix[T]): DenseMatrix[T] = {
-      assert(lhs.rows == rhs.rows, s"Tried to add matrix with ${rhs.rows} rows to matrix with ${lhs.rows} rows")
-      assert(lhs.cols == rhs.cols, s"Tried to add matrix with ${rhs.cols} cols to matrix with ${lhs.cols} cols")
+      if (lhs.rows != rhs.rows) {
+        throw new IllegalArgumentException(
+          s"Tried to add matrix with ${rhs.rows} rows to matrix with ${lhs.rows} rows"
+        )
+      }
+      if (lhs.cols != rhs.cols) {
+        throw new IllegalArgumentException(
+          s"Tried to add matrix with ${rhs.cols} cols to matrix with ${lhs.cols} cols"
+        )
+      }
       val answer = Array.fill(lhs.rows, lhs.cols)(monoid.zero)
 
       var c = 0
@@ -62,7 +72,11 @@ trait DenseMatrixOps {
     val multiplicativeSemigroup = implicitly[MultiplicativeSemigroup[T]]
 
     def *(rhs: DenseMatrix[T]): DenseMatrix[T] = {
-      assert(lhs.cols == rhs.rows, s"Tried to multiply matrix with ${lhs.cols} cols on matrix with ${rhs.rows} rows")
+      if (lhs.cols != rhs.rows) {
+        throw new IllegalArgumentException(
+          s"Tried to multiply matrix with ${lhs.cols} cols on matrix with ${rhs.rows} rows"
+        )
+      }
       val answer = Array.fill(lhs.rows, rhs.cols)(additiveMonoid.zero)
 
       var c = 0
@@ -86,8 +100,16 @@ trait DenseMatrixOps {
     val group = implicitly[AdditiveGroup[T]]
 
     def -(rhs: DenseMatrix[T]): DenseMatrix[T] = {
-      assert(lhs.rows == rhs.rows, s"Tried to subtract matrix with ${rhs.rows} rows from matrix with ${lhs.rows} rows")
-      assert(lhs.cols == rhs.cols, s"Tried to subtract matrix with ${rhs.cols} cols from matrix with ${lhs.cols} cols")
+      if (lhs.rows != rhs.rows) {
+        throw new IllegalArgumentException(
+          s"Tried to subtract matrix with ${rhs.rows} rows from matrix with ${lhs.rows} rows"
+        )
+      }
+      if (lhs.cols != rhs.cols) {
+        throw new IllegalArgumentException(
+          s"Tried to subtract matrix with ${rhs.cols} cols from matrix with ${lhs.cols} cols"
+        )
+      }
       val answer = Array.fill(lhs.rows, lhs.cols)(group.zero)
 
       var c = 0
@@ -111,7 +133,9 @@ object DenseMatrix {
   def apply[R, V: ClassTag : AdditiveMonoid](rows: R*)(implicit r: Row[R, V]): DenseMatrix[V] = {
     val rowsCount = rows.length
     val colsCount = if (rows.isEmpty) 0 else r.length(rows(0))
-    assert(rows.forall(row => r.length(row) == colsCount), "Not all rows have equal number of columns")
+    if (!rows.forall(row => r.length(row) == colsCount)) {
+      throw new IllegalArgumentException("Not all rows have equal number of columns")
+    }
     val array = Array.fill(rowsCount, colsCount)(implicitly[AdditiveMonoid[V]].zero)
     rows.zipWithIndex.foreach({ case (row, i) => r.foreach(row, (v, j) => array(i)(j) = v)})
     new DenseMatrix[V](array)

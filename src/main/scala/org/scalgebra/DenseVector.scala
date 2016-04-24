@@ -30,7 +30,11 @@ trait DenseVectorOps {
     val monoid = implicitly[AdditiveMonoid[T]]
 
     def +(rhs: DenseVector[T]): DenseVector[T] = {
-      assert(lhs.length == rhs.length, s"Tried to add vector with len ${rhs.length} to vector with len ${lhs.length}")
+      if (lhs.length != rhs.length) {
+        throw new IllegalArgumentException(
+          s"Tried to add vector with len ${rhs.length} to vector with len ${lhs.length}"
+        )
+      }
       val answer = Array.fill(lhs.length)(monoid.zero)
 
       var i = 0
@@ -46,7 +50,11 @@ trait DenseVectorOps {
     val group = implicitly[AdditiveGroup[T]]
 
     def -(rhs: DenseVector[T]): DenseVector[T] = {
-      assert(lhs.length == rhs.length, s"Tried to add vector with len ${rhs.length} to vector with len ${lhs.length}")
+      if (lhs.length != rhs.length) {
+        throw new IllegalArgumentException(
+          s"Tried to add vector with len ${rhs.length} to vector with len ${lhs.length}"
+        )
+      }
       val answer = Array.fill(lhs.length)(group.zero)
 
       var i = 0
