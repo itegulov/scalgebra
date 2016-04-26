@@ -1,5 +1,9 @@
 package org.scalgebra.util
 
+import shapeless.HList
+import shapeless.ops.{hlist, tuple}
+import shapeless.syntax.std.tuple._
+
 /**
   * Row from a Matrix with some V-typed values in it.
   *
@@ -64,6 +68,12 @@ object Row {
     }
 
     def length(tup : (V, V, V, V)) = 4
+  }
+
+  implicit def rowFromHList[V, L <: HList : hlist.ZipWithIndex]: Row[L, V] = new Row[L, V] {
+    override def foreach(row: L, f: (V, Int) => Unit): Unit = row.zipWithIndex
+
+    override def length(row: L): Int = row.runtimeLength
   }
 
   // TODO: use shapeless with arity abstraction to generate rows from TupleN[V]
