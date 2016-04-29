@@ -99,4 +99,7 @@ object DenseVector {
 
   def zeros[V: ClassTag : AdditiveMonoid](length: Int): DenseVector[V] =
     apply(Array.fill(length)(implicitly[AdditiveMonoid[V]].zero))
+
+  def ones[V: ClassTag : MultiplicativeMonoid](length: Int): DenseVector[V] =
+    apply(Array.fill(length)(implicitly[MultiplicativeMonoid[V]].one))
 }

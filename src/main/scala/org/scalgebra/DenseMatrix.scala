@@ -141,5 +141,18 @@ object DenseMatrix {
   }
 
   def zeros[V: ClassTag : AdditiveMonoid](n: Int, m: Int): DenseMatrix[V] =
-    apply(Array.fill(n, m)(implicitly[AdditiveMonoid[V]].zero))
+    new DenseMatrix[V](Array.fill(n, m)(implicitly[AdditiveMonoid[V]].zero))
+
+  def ones[V: ClassTag : MultiplicativeMonoid](n: Int, m: Int): DenseMatrix[V] =
+    new DenseMatrix[V](Array.fill(n, m)(implicitly[MultiplicativeMonoid[V]].one))
+
+  def unit[V: ClassTag : AdditiveMonoid : MultiplicativeMonoid](n: Int): DenseMatrix[V] = {
+    val addMonoid = implicitly[AdditiveMonoid[V]]
+    val multMonoid = implicitly[MultiplicativeMonoid[V]]
+
+    val array = Array.fill(n, n)(addMonoid.zero)
+    for (i <- 0 until n)
+      array(i)(i) = multMonoid.one
+    new DenseMatrix[V](array)
+  }
 }
