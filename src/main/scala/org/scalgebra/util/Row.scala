@@ -2,7 +2,7 @@ package org.scalgebra.util
 
 import shapeless.HList
 import shapeless.ops.{hlist, tuple}
-import shapeless.syntax.std.tuple._
+import shapeless.syntax.std.TupleOps
 
 /**
   * Row from a Matrix with some V-typed values in it.
@@ -68,6 +68,18 @@ object Row {
     }
 
     def length(tup : (V, V, V, V)) = 4
+  }
+
+  implicit def rowFromTuple5[V] : Row[(V, V, V, V, V), V] = new Row[(V, V, V, V, V), V] {
+    def foreach(tup: (V, V, V, V, V), f: (V, Int) => Unit) = {
+      f(tup._1, 0)
+      f(tup._2, 1)
+      f(tup._3, 2)
+      f(tup._4, 3)
+      f(tup._5, 4)
+    }
+
+    def length(tup : (V, V, V, V, V)) = 5
   }
 
   implicit def rowFromHList[V, L <: HList : hlist.ZipWithIndex]: Row[L, V] = new Row[L, V] {
