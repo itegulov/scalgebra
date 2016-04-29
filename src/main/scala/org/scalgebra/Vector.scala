@@ -1,6 +1,6 @@
 package org.scalgebra
 
-import algebra.ring.AdditiveMonoid
+import algebra.ring.{AdditiveMonoid, MultiplicativeMonoid}
 
 import scala.reflect.ClassTag
 
@@ -73,4 +73,6 @@ trait Vector[T] {
 
 object Vector {
   def zeros[V: ClassTag : AdditiveMonoid](length: Int): Vector[V] = DenseVector.zeros[V](length)
+
+  def ones[V: ClassTag : MultiplicativeMonoid](length: Int): Vector[V] = DenseVector.ones[V](length)
 }

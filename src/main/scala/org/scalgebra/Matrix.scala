@@ -1,6 +1,6 @@
 package org.scalgebra
 
-import algebra.ring.AdditiveMonoid
+import algebra.ring.{AdditiveMonoid, MultiplicativeMonoid}
 
 import scala.reflect.ClassTag
 
@@ -110,4 +110,8 @@ trait Matrix[T] {
 
 object Matrix {
   def zeros[V: ClassTag : AdditiveMonoid](n: Int, m: Int): Matrix[V] = DenseMatrix.zeros(n, m)
+
+  def ones[V: ClassTag : MultiplicativeMonoid](n: Int, m: Int): Matrix[V] = DenseMatrix.ones(n, m)
+
+  def unit[V: ClassTag : MultiplicativeMonoid : AdditiveMonoid](n: Int): Matrix[V] = DenseMatrix.unit(n)
 }
