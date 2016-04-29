@@ -26,7 +26,7 @@ final class DenseVector[T](val array: Array[T]) extends Vector[T] {
 
 trait DenseVectorOps {
 
-  implicit class DenseVectorAdditiveMonoidOps[T: ClassTag : AdditiveMonoid](lhs: DenseVector[T]) {
+  implicit class DenseVecAddOps[T: ClassTag : AdditiveMonoid](lhs: DenseVector[T]) {
     val monoid = implicitly[AdditiveMonoid[T]]
 
     def +(rhs: DenseVector[T]): DenseVector[T] = {
@@ -46,7 +46,7 @@ trait DenseVectorOps {
     }
   }
 
-  implicit class DenseVectorAdditiveGroupOps[T: ClassTag : AdditiveGroup](lhs: DenseVector[T]) {
+  implicit class DenseVecSubOps[T: ClassTag : AdditiveGroup](lhs: DenseVector[T]) {
     val group = implicitly[AdditiveGroup[T]]
 
     def -(rhs: DenseVector[T]): DenseVector[T] = {
@@ -66,7 +66,29 @@ trait DenseVectorOps {
     }
   }
 
-  // TODO: think about multiplication with matrix
+  implicit class DenseVecMultOps[T: ClassTag : MultiplicativeMonoid : AdditiveMonoid](lhs: DenseVector[T]) {
+    val multMonoid = implicitly[MultiplicativeMonoid[T]]
+    val addMonoid = implicitly[AdditiveMonoid[T]]
+
+    def *(rhs: DenseMatrix[T]): T = {
+      if (lhs.length != rhs.cols) {
+        throw new IllegalArgumentException(
+          s"Tried to multiplicate vector with len ${lhs.length} on matrix with ${rhs.cols} cols"
+        )
+      }
+      if (rhs.rows != 1) {
+        throw new IllegalArgumentException(
+          s"Tried to multiplcate vector on matrix with ${rhs.rows} rows"
+        )
+      }
+      var answer: T = addMonoid.zero
+      var i = 0
+      while (i < lhs.length) {
+        answer = addMonoid.plus(answer, multMonoid.times(lhs(i), rhs(0, i)))
+      }
+      answer
+    }
+  }
 }
 
 object DenseVector {
