@@ -21,13 +21,26 @@ trait Matrix[T] {
   // Iterators
 
   def iterator: Iterator[((Int, Int), T)] =
-    for (i <- Iterator.range(0, rows); j <- Iterator.range(0, cols)) yield (i, j) -> apply(i, j)
+    for (i <- Iterator.range(0, rows); j <- Iterator.range(0, cols))
+    yield (i, j) -> apply(i, j)
 
   def valuesIterator: Iterator[T] =
-    for (i <- Iterator.range(0, rows); j <- Iterator.range(0, cols)) yield apply(i, j)
+    for (i <- Iterator.range(0, rows); j <- Iterator.range(0, cols))
+    yield apply(i, j)
 
   def keysIterator: Iterator[(Int, Int)] =
-    for (i <- Iterator.range(0, rows); j <- Iterator.range(0, cols)) yield (i, j)
+    for (i <- Iterator.range(0, rows); j <- Iterator.range(0, cols))
+    yield (i, j)
+
+  def rowsIterator: Iterator[Iterator[T]] =
+    for (i <- Iterator.range(0, rows))
+    yield for (j <- Iterator.range(0, cols))
+          yield apply(i, j)
+
+  def colsIterator: Iterator[Iterator[T]] =
+    for (j <- Iterator.range(0, cols))
+    yield for (i <- Iterator.range(0, rows))
+          yield apply(i, j)
 
   // Collection operations
 
