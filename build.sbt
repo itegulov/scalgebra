@@ -13,11 +13,12 @@ scalastyleConfig := file("project/scalastyle-config.xml")
 
 val scalaTestVersion = "3.0.0-M15"
 val algebraVersion = "0.3.1"
+val scalazVersion = "7.2.2"
 
 libraryDependencies ++= Seq(
   "org.spire-math" %% "algebra" % algebraVersion,
   "org.spire-math" %% "algebra-std" % algebraVersion,
-  "org.typelevel" %% "cats" % "0.4.1",
+  "org.scalaz" %% "scalaz-core" % scalazVersion,
   "com.chuusai" %% "shapeless" % "2.3.0",
   "org.scalactic" %% "scalactic" % scalaTestVersion,
   "org.scalatest" %% "scalatest" % scalaTestVersion % "test",
