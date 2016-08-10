@@ -15,7 +15,7 @@ import scala.reflect.ClassTag
   *
   * @author Daniyar Itegulov
   */
-final class DenseMatrix[T](val array: Array[Array[T]]) extends Matrix[T] {
+final class DenseMatrix[T: ClassTag](val array: Array[Array[T]]) extends Matrix[T] {
   override val rows = array.length
   override val cols = if (rows == 0) 0 else array.head.length
 
