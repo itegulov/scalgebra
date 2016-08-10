@@ -5,22 +5,21 @@ version := "0.0.1-SNAPSHOT"
 scalaVersion := "2.11.8"
 
 resolvers ++= Seq(
-  Resolver.sonatypeRepo("releases"),
-  Resolver.sonatypeRepo("snapshots")
+  Resolver.sonatypeRepo("releases")
 )
 
 scalastyleConfig := file("project/scalastyle-config.xml")
 
-val scalaTestVersion = "3.0.0-M15"
-val algebraVersion = "0.3.1"
-val scalazVersion = "7.2.2"
+val scalaTestVersion = "3.0.0"
+val algebraVersion = "0.4.2"
 
 libraryDependencies ++= Seq(
   "org.spire-math" %% "algebra" % algebraVersion,
   "org.spire-math" %% "algebra-std" % algebraVersion,
-  "org.scalaz" %% "scalaz-core" % scalazVersion,
-  "com.chuusai" %% "shapeless" % "2.3.0",
+  "com.chuusai" %% "shapeless" % "2.3.1",
   "org.scalactic" %% "scalactic" % scalaTestVersion,
   "org.scalatest" %% "scalatest" % scalaTestVersion % "test",
-  "org.scalacheck" %% "scalacheck" % "1.12.5" % "test"
+  "org.scalacheck" %% "scalacheck" % "1.13.2" % "test",
+  // Require explicit scala-xml version because there are multiple dependencies requiring different versions of it
+  "org.scala-lang.modules" %% "scala-xml" % "1.0.5"
 )
