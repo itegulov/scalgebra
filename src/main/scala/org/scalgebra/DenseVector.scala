@@ -89,6 +89,18 @@ trait DenseVectorOps {
       answer
     }
   }
+
+  implicit class DenseVecDouble(lhs: DenseVector[Double]) {
+    def magnitude: Double = Math.pow(lhs.array.map(a => a * a).sum, 1.0D / lhs.length)
+
+    def normalize: DenseVector[Double] = DenseVector(lhs.array.map(_ / lhs.magnitude))
+  }
+
+  implicit class DenseVecFloat(lhs: DenseVector[Float]) {
+    def magnitude: Float = Math.pow(lhs.array.map(a => a * a).sum, 1.0D / lhs.length).toFloat
+
+    def normalize: DenseVector[Float] = DenseVector(lhs.array.map(_ / lhs.magnitude))
+  }
 }
 
 object DenseVector {
