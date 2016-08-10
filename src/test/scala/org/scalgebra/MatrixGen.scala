@@ -1,7 +1,7 @@
 package org.scalgebra
 
-import org.scalacheck.Arbitrary
-import algebra.ring.Semiring
+import org.scalacheck.{Arbitrary, Gen}
+import algebra.ring.Ring
 
 import scala.reflect.ClassTag
 
@@ -10,9 +10,13 @@ import scala.reflect.ClassTag
   */
 object MatrixGen {
 
-  implicit def arbitrarySemiringMatrix[T: Arbitrary : Semiring : ClassTag]: Arbitrary[Matrix[T]] =
+  implicit def arbitrarySemiringMatrix[T: Arbitrary : Ring : ClassTag]: Arbitrary[Matrix[T]] =
     Arbitrary {
-      DenseMatrixGen.genSemiringDenseMatrix
+      Gen.frequency[DenseMatrix[T]](
+        (90, DenseMatrixGen.genSemiringDenseMatrix),
+        (5, DenseMatrixGen.genZeroDenseMatrix),
+        (5, DenseMatrixGen.genUnitDenseMatrix)
+      )
     }
 
 }

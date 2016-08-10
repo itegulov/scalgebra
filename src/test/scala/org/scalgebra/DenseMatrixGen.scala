@@ -11,15 +11,30 @@ import scala.reflect.ClassTag
   * @author Daniyar Itegulov
   */
 object DenseMatrixGen {
-  def genSemiringDenseMatrix[T: Arbitrary : Semiring : ClassTag]: Gen[DenseMatrix[T]] =
+  val maxMatrixSize = 100
+
+  def genSemiringDenseMatrix[T: Arbitrary : Ring : ClassTag]: Gen[DenseMatrix[T]] =
     for {
-      cols <- Gen.choose(0, 100)
-      rows <- Gen.choose(0, 100)
+      cols <- Gen.choose(0, maxMatrixSize)
+      rows <- Gen.choose(0, maxMatrixSize)
       matrix <- Gen.containerOfN[Array, Array[T]](rows, Gen.containerOfN[Array, T](cols, Arbitrary.arbitrary[T]))
     } yield DenseMatrix(matrix)
 
-  implicit def arbitrarySemiringDenseMatrix[T: Arbitrary : Semiring : ClassTag]: Arbitrary[DenseMatrix[T]] =
+  def genUnitDenseMatrix[T: Ring : ClassTag]: Gen[DenseMatrix[T]] = for {
+    size <- Gen.choose(0, maxMatrixSize)
+  } yield DenseMatrix.unit(size)
+
+  def genZeroDenseMatrix[T: Ring : ClassTag]: Gen[DenseMatrix[T]] = for {
+    n <- Gen.choose(0, maxMatrixSize)
+    m <- Gen.choose(0, maxMatrixSize)
+  } yield DenseMatrix.zeros[T](n, m)
+
+  implicit def arbitraryRingDenseMatrix[T: Arbitrary : Ring : ClassTag]: Arbitrary[DenseMatrix[T]] =
     Arbitrary {
-      genSemiringDenseMatrix
+      Gen.frequency[DenseMatrix[T]](
+        (90, genSemiringDenseMatrix),
+        (5, genZeroDenseMatrix),
+        (5, genUnitDenseMatrix)
+      )
     }
 }
