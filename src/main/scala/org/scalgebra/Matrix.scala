@@ -106,6 +106,8 @@ trait Matrix[T] {
   }
 
   override def hashCode(): Int = valuesIterator.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+
+  def flatten(): Vector[T]
 }
 
 object Matrix {

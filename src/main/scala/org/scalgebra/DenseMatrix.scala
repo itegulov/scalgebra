@@ -34,6 +34,8 @@ final class DenseMatrix[T](val array: Array[Array[T]]) extends Matrix[T] {
     val col = if (j < 0) cols + j else j
     array(row)(col)
   }
+
+  override def flatten(): DenseVector[T] = DenseVector(array.flatten)
 }
 
 trait DenseMatrixOps {
