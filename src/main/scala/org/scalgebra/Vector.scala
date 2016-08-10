@@ -9,7 +9,7 @@ import scala.reflect.ClassTag
   *
   * @author Daniyar Itegulov
   */
-trait Vector[T] {
+trait Vector[T] extends Tensor[Int, T] {
   def apply(i: Int): T
 
   def length: Int

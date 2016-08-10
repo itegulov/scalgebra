@@ -9,7 +9,9 @@ import scala.reflect.ClassTag
   *
   * @author Daniyar Itegulov
   */
-trait Matrix[T] {
+trait Matrix[T] extends Tensor[(Int, Int), T] {
+  def apply(key: (Int, Int)): T = apply(key._1, key._2)
+
   def apply(i: Int, j: Int): T
 
   def rows: Int
