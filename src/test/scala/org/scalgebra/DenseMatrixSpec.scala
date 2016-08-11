@@ -4,6 +4,19 @@ import org.scalatest._
 
 class DenseMatrixSpec extends FlatSpec with Matchers {
 
+  "A DenseMatrix" should "not be constructed from different sized rows in constructor" in {
+    assertThrows[IllegalArgumentException] {
+      new DenseMatrix[Int](Array(Array(1, 2), Array(3, 4, 5)))
+    }
+  }
+
+  "A DenseMatrix" should "not be constructed from different sized rows in object companion" in {
+    assertThrows[IllegalArgumentException] {
+      import algebra.std.int._
+      DenseMatrix(Seq(1, 2), Seq(3, 4, 5))
+    }
+  }
+
   "A DenseMatrix" should "be able to add up for Ring types" in {
     // Int is a Ring
     import algebra.std.int._
