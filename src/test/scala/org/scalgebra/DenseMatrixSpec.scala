@@ -57,4 +57,54 @@ class DenseMatrixSpec extends FlatSpec with Matchers {
     val secondMatrix: DenseMatrix[Int] = DenseMatrix((5, 6), (7, 8))
     firstMatrix * secondMatrix shouldBe DenseMatrix((19, 22), (43, 50))
   }
+
+  "A Dense Matrix" should "not be summed for matrices with different row number" in {
+    // Int is a Ring
+    import algebra.std.int._
+    val firstMatrix: DenseMatrix[Int] = DenseMatrix((1, 2), (3, 4))
+    val secondMatrix: DenseMatrix[Int] = DenseMatrix((5, 6))
+    assertThrows[IllegalArgumentException] {
+      firstMatrix + secondMatrix
+    }
+  }
+
+  "A Dense Matrix" should "not be summed for matrices with different column number" in {
+    // Int is a Ring
+    import algebra.std.int._
+    val firstMatrix: DenseMatrix[Int] = DenseMatrix((1, 2), (3, 4))
+    val secondMatrix: DenseMatrix[Int] = DenseMatrix((5, 6, 7), (8, 9, 10))
+    assertThrows[IllegalArgumentException] {
+      firstMatrix + secondMatrix
+    }
+  }
+
+  "A Dense Matrix" should "not be subtracted for matrices with different row number" in {
+    // Int is a Ring
+    import algebra.std.int._
+    val firstMatrix: DenseMatrix[Int] = DenseMatrix((1, 2), (3, 4))
+    val secondMatrix: DenseMatrix[Int] = DenseMatrix((5, 6))
+    assertThrows[IllegalArgumentException] {
+      firstMatrix - secondMatrix
+    }
+  }
+
+  "A Dense Matrix" should "not be subtracted for matrices with different column number" in {
+    // Int is a Ring
+    import algebra.std.int._
+    val firstMatrix: DenseMatrix[Int] = DenseMatrix((1, 2), (3, 4))
+    val secondMatrix: DenseMatrix[Int] = DenseMatrix((5, 6, 7), (8, 9, 10))
+    assertThrows[IllegalArgumentException] {
+      firstMatrix - secondMatrix
+    }
+  }
+
+  "A Dense Matrix" should "not be multiplied for matrices with different row and column number" in {
+    // Int is a Ring
+    import algebra.std.int._
+    val firstMatrix: DenseMatrix[Int] = DenseMatrix((1, 2, 3), (4, 5, 6))
+    val secondMatrix: DenseMatrix[Int] = DenseMatrix((7, 8), (9, 10))
+    assertThrows[IllegalArgumentException] {
+      firstMatrix * secondMatrix
+    }
+  }
 }
