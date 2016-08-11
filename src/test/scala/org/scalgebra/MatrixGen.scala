@@ -13,9 +13,10 @@ object MatrixGen {
   implicit def arbitrarySemiringMatrix[T: Arbitrary : Ring : ClassTag]: Arbitrary[Matrix[T]] =
     Arbitrary {
       Gen.frequency[DenseMatrix[T]](
-        (90, DenseMatrixGen.genSemiringDenseMatrix),
-        (5, DenseMatrixGen.genZeroDenseMatrix),
-        (5, DenseMatrixGen.genUnitDenseMatrix)
+        (90, DenseMatrixGen.genRingDenseMatrix),
+        (3, DenseMatrixGen.genZeroDenseMatrix),
+        (3, DenseMatrixGen.genUnitDenseMatrix),
+        (3, DenseMatrixGen.genOneDenseMatrix)
       )
     }
 

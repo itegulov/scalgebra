@@ -13,7 +13,7 @@ import scala.reflect.ClassTag
 object DenseMatrixGen {
   val maxMatrixSize = 100
 
-  def genSemiringDenseMatrix[T: Arbitrary : Ring : ClassTag]: Gen[DenseMatrix[T]] =
+  def genRingDenseMatrix[T: Arbitrary : Ring : ClassTag]: Gen[DenseMatrix[T]] =
     for {
       cols <- Gen.choose(0, maxMatrixSize)
       rows <- Gen.choose(0, maxMatrixSize)
@@ -29,12 +29,18 @@ object DenseMatrixGen {
     m <- Gen.choose(0, maxMatrixSize)
   } yield DenseMatrix.zeros[T](n, m)
 
+  def genOneDenseMatrix[T: Ring : ClassTag]: Gen[DenseMatrix[T]] = for {
+    n <- Gen.choose(0, maxMatrixSize)
+    m <- Gen.choose(0, maxMatrixSize)
+  } yield DenseMatrix.ones[T](n, m)
+
   implicit def arbitraryRingDenseMatrix[T: Arbitrary : Ring : ClassTag]: Arbitrary[DenseMatrix[T]] =
     Arbitrary {
       Gen.frequency[DenseMatrix[T]](
-        (90, genSemiringDenseMatrix),
-        (5, genZeroDenseMatrix),
-        (5, genUnitDenseMatrix)
+        (90, genRingDenseMatrix),
+        (3, genZeroDenseMatrix),
+        (3, genUnitDenseMatrix),
+        (3, genOneDenseMatrix)
       )
     }
 }
