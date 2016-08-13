@@ -54,4 +54,16 @@ class DenseMatrixProps extends PropSpec with Matchers with GeneratorDrivenProper
       DenseMatrix.zeros(matrix.rows, matrix.cols) + matrix shouldBe matrix
     })
   }
+
+  property("commutativity of matrix addition") {
+    forAll((x: DenseMatrix[Int], y: DenseMatrix[Int]) => {
+      x + y shouldBe y + x
+    })
+  }
+
+  property("associativity of matrix addition") {
+    forAll((x: DenseMatrix[Int], y: DenseMatrix[Int], z: DenseMatrix[Int]) => {
+      (x + y) + z shouldBe x + (y + z)
+    })
+  }
 }
