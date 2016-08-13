@@ -58,7 +58,7 @@ class DenseMatrixSpec extends FlatSpec with Matchers {
     firstMatrix * secondMatrix shouldBe DenseMatrix((19, 22), (43, 50))
   }
 
-  "A Dense Matrix" should "not be summed for matrices with different row number" in {
+  "A DenseMatrix" should "not be summed for matrices with different row number" in {
     // Int is a Ring
     import algebra.std.int._
     val firstMatrix: DenseMatrix[Int] = DenseMatrix((1, 2), (3, 4))
@@ -68,7 +68,7 @@ class DenseMatrixSpec extends FlatSpec with Matchers {
     }
   }
 
-  "A Dense Matrix" should "not be summed for matrices with different column number" in {
+  "A DenseMatrix" should "not be summed for matrices with different column number" in {
     // Int is a Ring
     import algebra.std.int._
     val firstMatrix: DenseMatrix[Int] = DenseMatrix((1, 2), (3, 4))
@@ -78,7 +78,7 @@ class DenseMatrixSpec extends FlatSpec with Matchers {
     }
   }
 
-  "A Dense Matrix" should "not be subtracted for matrices with different row number" in {
+  "A DenseMatrix" should "not be subtracted for matrices with different row number" in {
     // Int is a Ring
     import algebra.std.int._
     val firstMatrix: DenseMatrix[Int] = DenseMatrix((1, 2), (3, 4))
@@ -88,7 +88,7 @@ class DenseMatrixSpec extends FlatSpec with Matchers {
     }
   }
 
-  "A Dense Matrix" should "not be subtracted for matrices with different column number" in {
+  "A DenseMatrix" should "not be subtracted for matrices with different column number" in {
     // Int is a Ring
     import algebra.std.int._
     val firstMatrix: DenseMatrix[Int] = DenseMatrix((1, 2), (3, 4))
@@ -98,7 +98,7 @@ class DenseMatrixSpec extends FlatSpec with Matchers {
     }
   }
 
-  "A Dense Matrix" should "not be multiplied for matrices with different row and column number" in {
+  "A DenseMatrix" should "not be multiplied for matrices with different row and column number" in {
     // Int is a Ring
     import algebra.std.int._
     val firstMatrix: DenseMatrix[Int] = DenseMatrix((1, 2, 3), (4, 5, 6))
