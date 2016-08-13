@@ -1,7 +1,7 @@
 package org.scalgebra
 
 import org.scalacheck.{Arbitrary, Gen}
-import algebra.ring.Semiring
+import algebra.ring.{MultiplicativeMonoid, Ring, Semiring}
 
 import scala.reflect.ClassTag
 
@@ -12,13 +12,34 @@ import scala.reflect.ClassTag
   */
 object DenseVectorGen {
   def genSemiringDenseVector[T: Arbitrary : Semiring : ClassTag]: Gen[DenseVector[T]] =
-    for {
-      length <- Gen.choose(0, 100)
-      array <- Gen.containerOfN[Array, T](length, Arbitrary.arbitrary[T])
-    } yield DenseVector(array)
+    Gen.sized { size =>
+      for {
+        array <- Gen.containerOfN[Array, T](size, Arbitrary.arbitrary[T])
+      } yield DenseVector(array)
+    }
 
-  implicit def arbitrarySemiringDenseVector[T: Arbitrary : Semiring : ClassTag]: Arbitrary[DenseVector[T]] =
+  def genZeroDenseVector[T: Arbitrary : Semiring : ClassTag]: Gen[DenseVector[T]] =
+    Gen.sized { size =>
+      Gen.const(DenseVector.zeros(size))
+    }
+
+  def genOneDenseVector[T: Arbitrary : MultiplicativeMonoid : ClassTag]: Gen[DenseVector[T]] =
+    Gen.sized { size =>
+      Gen.const(DenseVector.ones(size))
+    }
+
+  def genUnitDenseVector[T: Arbitrary : Semiring : ClassTag]: Gen[DenseVector[T]] =
+    for {
+      value <- Arbitrary.arbitrary[T]
+    } yield DenseVector(value)
+
+  implicit def arbitrarySemiringDenseVector[T: Arbitrary : Ring : ClassTag]: Arbitrary[DenseVector[T]] =
     Arbitrary {
-      genSemiringDenseVector
+      Gen.frequency(
+        (85, genSemiringDenseVector),
+        (5, genZeroDenseVector),
+        (5, genOneDenseVector),
+        (5, genUnitDenseVector)
+      )
     }
 }
