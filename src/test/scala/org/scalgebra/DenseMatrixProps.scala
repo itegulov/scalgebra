@@ -56,6 +56,19 @@ class DenseMatrixProps extends PropSpec with Matchers with GeneratorDrivenProper
     })
   }
 
+  property("can be added with ones matrix") {
+    forAll((matrix: DenseMatrix[Int]) => {
+      assert(matrix + DenseMatrix.ones(matrix.rows, matrix.cols) !== matrix)
+      assert(DenseMatrix.ones(matrix.rows, matrix.cols) + matrix !== matrix)
+    })
+  }
+
+  property("zero matrix is a subtraction identity") {
+    forAll((matrix: DenseMatrix[Int]) => {
+      matrix - DenseMatrix.zeros(matrix.rows, matrix.cols) shouldBe matrix
+    })
+  }
+
   property("commutativity of matrix addition") {
     forAll((x: DenseMatrix[Int], y: DenseMatrix[Int]) => {
       (x.rows == y.rows && x.cols == y.cols) ==> (x + y == y + x)
