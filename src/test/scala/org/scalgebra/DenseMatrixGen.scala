@@ -41,7 +41,7 @@ object DenseMatrixGen {
 
   def genOneColumnMatrix[T: Arbitrary : Ring : ClassTag]: Gen[DenseMatrix[T]] = for {
     size <- Gen.choose(0, maxMatrixSize)
-    column <- Gen.containerOfN[Seq, Seq[T]](size, Gen.containerOfN[Seq, T](1, Arbitrary.arbitrary[T]))
+    column <- Gen.containerOfN[Array, Seq[T]](size, Gen.containerOfN[Seq, T](1, Arbitrary.arbitrary[T]))
   } yield DenseMatrix(column)
 
   implicit def arbitraryRingDenseMatrix[T: Arbitrary : Ring : ClassTag]: Arbitrary[DenseMatrix[T]] =
@@ -56,12 +56,12 @@ object DenseMatrixGen {
       )
     }
 
-  implicit def arbitraryOneRowedDenseMatrix[T: Arbitrary : Ring : ClassTag]: Arbitrary[DenseMatrix[T]] =
+  def arbitraryOneRowedDenseMatrix[T: Arbitrary : Ring : ClassTag]: Arbitrary[DenseMatrix[T]] =
     Arbitrary {
       genOneRowedMatrix
     }
 
-  implicit def arbitraryOneColumnDenseMatrix[T: Arbitrary : Ring : ClassTag]: Arbitrary[DenseMatrix[T]] =
+  def arbitraryOneColumnDenseMatrix[T: Arbitrary : Ring : ClassTag]: Arbitrary[DenseMatrix[T]] =
     Arbitrary {
       genOneColumnMatrix
     }
