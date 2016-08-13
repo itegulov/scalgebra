@@ -85,6 +85,7 @@ trait DenseVectorOps {
       var i = 0
       while (i < lhs.length) {
         answer = addMonoid.plus(answer, multMonoid.times(lhs(i), rhs(0, i)))
+        i += 1
       }
       answer
     }
