@@ -58,8 +58,8 @@ class DenseMatrixProps extends PropSpec with Matchers with GeneratorDrivenProper
 
   property("can be added with ones matrix") {
     forAll((matrix: DenseMatrix[Int]) => {
-      assert(matrix + DenseMatrix.ones(matrix.rows, matrix.cols) !== matrix)
-      assert(DenseMatrix.ones(matrix.rows, matrix.cols) + matrix !== matrix)
+      (matrix.cols != 0 && matrix.rows != 0) ==> (matrix + DenseMatrix.ones(matrix.rows, matrix.cols) !== matrix)
+      (matrix.cols != 0 && matrix.rows != 0) ==> (DenseMatrix.ones(matrix.rows, matrix.cols) + matrix !== matrix)
     })
   }
 
