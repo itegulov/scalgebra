@@ -71,13 +71,13 @@ class DenseMatrixProps extends PropSpec with Matchers with GeneratorDrivenProper
 
   property("commutativity of matrix addition") {
     forAll((x: DenseMatrix[Int], y: DenseMatrix[Int]) => {
-      (x.rows == y.rows && x.cols == y.cols) ==> (x + y == y + x)
+      (x.rows == y.rows && x.cols == y.cols) ==> (x + y === y + x)
     })
   }
 
   property("associativity of matrix addition") {
     forAll((x: DenseMatrix[Int], y: DenseMatrix[Int], z: DenseMatrix[Int]) => {
-      (x.rows == y.rows && y.rows == z.rows && x.cols == y.cols && y.cols == z.cols) ==> ((x + y) + z == x + (y + z))
+      (x.rows == y.rows && y.rows == z.rows && x.cols == y.cols && y.cols == z.cols) ==> ((x + y) + z === x + (y + z))
     })
   }
 }
