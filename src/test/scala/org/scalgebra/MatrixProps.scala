@@ -32,6 +32,20 @@ class MatrixProps extends PropSpec with Matchers with GeneratorDrivenPropertyChe
     })
   }
 
+  property("colsIterator has all elements") {
+    forAll((matrix: Matrix[Int]) => {
+      val colsIteratorElements = matrix.colsIterator.flatten.toSet
+      assert(matrix.flatten().forall(colsIteratorElements.contains))
+    })
+  }
+
+  property("rowsIterator has all elements") {
+    forAll((matrix: Matrix[Int]) => {
+      val rowsIteratorElements = matrix.rowsIterator.flatten.toSet
+      assert(matrix.flatten().forall(rowsIteratorElements.contains))
+    })
+  }
+
   property("string representation contains all elements") {
     forAll((matrix: Matrix[Int]) => {
       val representation = matrix.toString
