@@ -11,38 +11,47 @@ import scala.reflect.ClassTag
   * @author Daniyar Itegulov
   */
 object DenseMatrixGen {
-  val maxMatrixSize = 100
-
   def genRingDenseMatrix[T: Arbitrary : Ring : ClassTag]: Gen[DenseMatrix[T]] =
-    for {
-      cols <- Gen.choose(0, maxMatrixSize)
-      rows <- Gen.choose(0, maxMatrixSize)
-      matrix <- Gen.containerOfN[Array, Array[T]](rows, Gen.containerOfN[Array, T](cols, Arbitrary.arbitrary[T]))
-    } yield DenseMatrix(matrix)
+    Gen.sized { rows =>
+      Gen.sized { cols =>
+        for {
+          matrix <- Gen.containerOfN[Array, Array[T]](rows, Gen.containerOfN[Array, T](cols, Arbitrary.arbitrary[T]))
+        } yield DenseMatrix(matrix)
+      }
+    }
 
-  def genUnitDenseMatrix[T: Ring : ClassTag]: Gen[DenseMatrix[T]] = for {
-    size <- Gen.choose(0, maxMatrixSize)
-  } yield DenseMatrix.unit(size)
+  def genUnitDenseMatrix[T: Ring : ClassTag]: Gen[DenseMatrix[T]] =
+    Gen.sized { size =>
+      Gen.const(DenseMatrix.unit(size))
+    }
 
-  def genZeroDenseMatrix[T: Ring : ClassTag]: Gen[DenseMatrix[T]] = for {
-    n <- Gen.choose(0, maxMatrixSize)
-    m <- Gen.choose(0, maxMatrixSize)
-  } yield DenseMatrix.zeros[T](n, m)
+  def genZeroDenseMatrix[T: Ring : ClassTag]: Gen[DenseMatrix[T]] =
+    Gen.sized { rows =>
+      Gen.sized { cols =>
+        Gen.const(DenseMatrix.zeros[T](rows, cols))
+      }
+    }
 
-  def genOneDenseMatrix[T: Ring : ClassTag]: Gen[DenseMatrix[T]] = for {
-    n <- Gen.choose(0, maxMatrixSize)
-    m <- Gen.choose(0, maxMatrixSize)
-  } yield DenseMatrix.ones[T](n, m)
+  def genOneDenseMatrix[T: Ring : ClassTag]: Gen[DenseMatrix[T]] =
+    Gen.sized { rows =>
+      Gen.sized { cols =>
+        Gen.const(DenseMatrix.ones[T](rows, cols))
+      }
+    }
 
-  def genOneRowedMatrix[T: Arbitrary : Ring : ClassTag]: Gen[DenseMatrix[T]] = for {
-    size <- Gen.choose(0, maxMatrixSize)
-    row <- Gen.containerOfN[Seq, T](size, Arbitrary.arbitrary[T])
-  } yield DenseMatrix(row)
+  def genOneRowedMatrix[T: Arbitrary : Ring : ClassTag]: Gen[DenseMatrix[T]] =
+    Gen.sized { size =>
+      for {
+        matrix <- Gen.containerOfN[Seq, T](size, Arbitrary.arbitrary[T])
+      } yield DenseMatrix(matrix)
+    }
 
-  def genOneColumnMatrix[T: Arbitrary : Ring : ClassTag]: Gen[DenseMatrix[T]] = for {
-    size <- Gen.choose(0, maxMatrixSize)
-    column <- Gen.containerOfN[Array, Seq[T]](size, Gen.containerOfN[Seq, T](1, Arbitrary.arbitrary[T]))
-  } yield DenseMatrix(column)
+  def genOneColumnMatrix[T: Arbitrary : Ring : ClassTag]: Gen[DenseMatrix[T]] =
+    Gen.sized { size =>
+      for {
+        matrix <- Gen.containerOfN[Array, Seq[T]](size, Gen.containerOfN[Seq, T](1, Arbitrary.arbitrary[T]))
+      } yield DenseMatrix(matrix)
+    }
 
   implicit def arbitraryRingDenseMatrix[T: Arbitrary : Ring : ClassTag]: Arbitrary[DenseMatrix[T]] =
     Arbitrary {
