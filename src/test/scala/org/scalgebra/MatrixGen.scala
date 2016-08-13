@@ -10,13 +10,15 @@ import scala.reflect.ClassTag
   */
 object MatrixGen {
 
-  implicit def arbitrarySemiringMatrix[T: Arbitrary : Ring : ClassTag]: Arbitrary[Matrix[T]] =
+  implicit def arbitraryRingMatrix[T: Arbitrary : Ring : ClassTag]: Arbitrary[Matrix[T]] =
     Arbitrary {
       Gen.frequency[DenseMatrix[T]](
-        (90, DenseMatrixGen.genRingDenseMatrix),
-        (3, DenseMatrixGen.genZeroDenseMatrix),
-        (3, DenseMatrixGen.genUnitDenseMatrix),
-        (3, DenseMatrixGen.genOneDenseMatrix)
+        (75, DenseMatrixGen.genRingDenseMatrix),
+        (5, DenseMatrixGen.genOneRowedMatrix),
+        (5, DenseMatrixGen.genOneColumnMatrix),
+        (5, DenseMatrixGen.genZeroDenseMatrix),
+        (5, DenseMatrixGen.genUnitDenseMatrix),
+        (5, DenseMatrixGen.genOneDenseMatrix)
       )
     }
 

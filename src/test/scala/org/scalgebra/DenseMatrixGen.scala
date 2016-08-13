@@ -34,13 +34,35 @@ object DenseMatrixGen {
     m <- Gen.choose(0, maxMatrixSize)
   } yield DenseMatrix.ones[T](n, m)
 
+  def genOneRowedMatrix[T: Arbitrary : Ring : ClassTag]: Gen[DenseMatrix[T]] = for {
+    size <- Gen.choose(0, maxMatrixSize)
+    row <- Gen.containerOfN[Seq, T](size, Arbitrary.arbitrary[T])
+  } yield DenseMatrix(row)
+
+  def genOneColumnMatrix[T: Arbitrary : Ring : ClassTag]: Gen[DenseMatrix[T]] = for {
+    size <- Gen.choose(0, maxMatrixSize)
+    column <- Gen.containerOfN[Seq, Seq[T]](size, Gen.containerOfN[Seq, T](1, Arbitrary.arbitrary[T]))
+  } yield DenseMatrix(column)
+
   implicit def arbitraryRingDenseMatrix[T: Arbitrary : Ring : ClassTag]: Arbitrary[DenseMatrix[T]] =
     Arbitrary {
       Gen.frequency[DenseMatrix[T]](
-        (90, genRingDenseMatrix),
-        (3, genZeroDenseMatrix),
-        (3, genUnitDenseMatrix),
-        (3, genOneDenseMatrix)
+        (75, genRingDenseMatrix),
+        (5, genOneRowedMatrix),
+        (5, genOneColumnMatrix),
+        (5, genZeroDenseMatrix),
+        (5, genUnitDenseMatrix),
+        (5, genOneDenseMatrix)
       )
+    }
+
+  implicit def arbitraryOneRowedDenseMatrix[T: Arbitrary : Ring : ClassTag]: Arbitrary[DenseMatrix[T]] =
+    Arbitrary {
+      genOneRowedMatrix
+    }
+
+  implicit def arbitraryOneColumnDenseMatrix[T: Arbitrary : Ring : ClassTag]: Arbitrary[DenseMatrix[T]] =
+    Arbitrary {
+      genOneColumnMatrix
     }
 }
