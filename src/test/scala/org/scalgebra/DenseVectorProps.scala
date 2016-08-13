@@ -4,7 +4,7 @@ import org.scalatest._
 import org.scalatest.prop._
 import algebra.std.int._
 
-import org.scalgebra.DenseVectorGen._
+import org.scalgebra.generation.DenseVectorGen._
 
 /**
   * @author Daniyar Itegulov

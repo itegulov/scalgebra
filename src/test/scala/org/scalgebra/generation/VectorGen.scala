@@ -1,7 +1,8 @@
-package org.scalgebra
+package org.scalgebra.generation
 
-import org.scalacheck.{Arbitrary, Gen}
 import algebra.ring.Semiring
+import org.scalacheck.{Arbitrary, Gen}
+import org.scalgebra.Vector
 
 import scala.reflect.ClassTag
 

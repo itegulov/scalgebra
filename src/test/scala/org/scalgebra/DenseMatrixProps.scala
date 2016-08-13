@@ -5,7 +5,7 @@ import org.scalatest.prop._
 import org.scalacheck.Prop.BooleanOperators
 import algebra.std.int._
 
-import org.scalgebra.DenseMatrixGen._
+import org.scalgebra.generation.DenseMatrixGen._
 
 /**
   * @author Daniyar Itegulov

@@ -1,7 +1,8 @@
-package org.scalgebra
+package org.scalgebra.generation
 
-import org.scalacheck.{Arbitrary, Gen}
 import algebra.ring.Ring
+import org.scalacheck.{Arbitrary, Gen}
+import org.scalgebra.{DenseMatrix, Matrix}
 
 import scala.reflect.ClassTag
 

@@ -4,7 +4,7 @@ import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalatest._
 import algebra.std.int._
 
-import org.scalgebra.MatrixGen._
+import org.scalgebra.generation.MatrixGen._
 
 /**
   * @author Daniyar Itegulov

@@ -1,7 +1,8 @@
-package org.scalgebra
+package org.scalgebra.generation
 
-import org.scalacheck._
 import algebra.ring._
+import org.scalacheck._
+import org.scalgebra.DenseMatrix
 
 import scala.reflect.ClassTag
 

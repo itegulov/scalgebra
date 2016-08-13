@@ -1,7 +1,8 @@
-package org.scalgebra
+package org.scalgebra.generation
 
-import org.scalacheck.{Arbitrary, Gen}
 import algebra.ring.{MultiplicativeMonoid, Ring, Semiring}
+import org.scalacheck.{Arbitrary, Gen}
+import org.scalgebra.DenseVector
 
 import scala.reflect.ClassTag
 
