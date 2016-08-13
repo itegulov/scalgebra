@@ -34,7 +34,7 @@ object DenseVectorGen {
       value <- Arbitrary.arbitrary[T]
     } yield DenseVector(value)
 
-  implicit def arbitrarySemiringDenseVector[T: Arbitrary : Ring : ClassTag]: Arbitrary[DenseVector[T]] =
+  implicit def arbitraryRingDenseVector[T: Arbitrary : Ring : ClassTag]: Arbitrary[DenseVector[T]] =
     Arbitrary {
       Gen.frequency(
         (85, genSemiringDenseVector),
