@@ -54,15 +54,21 @@ object DenseMatrixGen {
       } yield DenseMatrix(matrix)
     }
 
+  def genOneElementMatrix[T: Arbitrary : ClassTag]: Gen[DenseMatrix[T]] =
+    for {
+      element <- Arbitrary.arbitrary[T]
+    } yield DenseMatrix(Tuple1(element))
+
   implicit def arbitraryRingDenseMatrix[T: Arbitrary : Ring : ClassTag]: Arbitrary[DenseMatrix[T]] =
     Arbitrary {
       Gen.frequency[DenseMatrix[T]](
-        (75, genRingDenseMatrix),
+        (70, genRingDenseMatrix),
         (5, genOneRowedMatrix),
         (5, genOneColumnMatrix),
         (5, genZeroDenseMatrix),
         (5, genUnitDenseMatrix),
-        (5, genOneDenseMatrix)
+        (5, genOneDenseMatrix),
+        (5, genOneElementMatrix)
       )
     }
 
