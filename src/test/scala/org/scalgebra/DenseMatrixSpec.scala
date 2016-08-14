@@ -107,4 +107,11 @@ class DenseMatrixSpec extends FlatSpec with Matchers {
       firstMatrix * secondMatrix
     }
   }
+
+  "A DenseMatrix" should "be able to transpose" in {
+    // Int is a Ring
+    import algebra.std.int._
+    val matrix: DenseMatrix[Int] = DenseMatrix((1, 2, 3), (4, 5, 6))
+    matrix.transpose() shouldBe DenseMatrix((1, 4), (2, 5), (3, 6))
+  }
 }

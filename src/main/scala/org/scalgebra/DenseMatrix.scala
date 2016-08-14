@@ -36,6 +36,8 @@ final class DenseMatrix[T: ClassTag](val array: Array[Array[T]]) extends Matrix[
   }
 
   override def flatten(): DenseVector[T] = DenseVector(array.flatten)
+
+  override def transpose(): DenseMatrix[T] = DenseMatrix(colsIterator.map(_.toSeq).toArray)
 }
 
 trait DenseMatrixOps {
@@ -128,16 +130,16 @@ trait DenseMatrixOps {
 }
 
 object DenseMatrix {
-  def apply[V: ClassTag : AdditiveMonoid, R](rows: Array[R])(implicit r: Row[R, V]): DenseMatrix[V] =
+  def apply[V: ClassTag, R](rows: Array[R])(implicit r: Row[R, V]): DenseMatrix[V] =
     apply(rows: _*)
 
-  def apply[R, V: ClassTag : AdditiveMonoid](rows: R*)(implicit r: Row[R, V]): DenseMatrix[V] = {
+  def apply[R, V: ClassTag](rows: R*)(implicit r: Row[R, V]): DenseMatrix[V] = {
     val rowsCount = rows.length
     val colsCount = if (rows.isEmpty) 0 else r.length(rows(0))
     if (!rows.forall(row => r.length(row) == colsCount)) {
       throw new IllegalArgumentException("Not all rows have equal number of columns")
     }
-    val array = Array.fill(rowsCount, colsCount)(implicitly[AdditiveMonoid[V]].zero)
+    val array = Array.ofDim[V](rowsCount, colsCount)
     rows.zipWithIndex.foreach({ case (row, i) => r.foreach(row, (v, j) => array(i)(j) = v)})
     new DenseMatrix[V](array)
   }
