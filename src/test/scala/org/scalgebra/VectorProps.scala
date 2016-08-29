@@ -39,4 +39,29 @@ class VectorProps extends PropSpec with Matchers with GeneratorDrivenPropertyChe
         vector(i) shouldBe array(i)
     })
   }
+
+  property("all elements in vector exist inside of it") {
+    forAll((vector: Vector[Int]) => {
+      for (i <- 0 until vector.length)
+        vector.exists(_ == vector(i)) shouldBe true
+    })
+  }
+
+  property("folds are equivalent for addition") {
+    forAll((vector: Vector[Int]) => {
+      vector.fold(0)(_ + _) shouldBe vector.toArray.sum
+      vector.fold(0)(_ + _) shouldBe vector.foldLeft(0)(_ + _)
+      vector.fold(0)(_ + _) shouldBe vector.foldRight(0)(_ + _)
+    })
+  }
+
+  property("reduces are equivalent for addition") {
+    forAll((vector: Vector[Int]) => {
+      if (vector.length != 0) {
+        vector.reduce(_ + _) shouldBe vector.toArray.sum
+        vector.reduce(_ + _) shouldBe vector.reduceLeft(_ + _)
+        vector.reduce(_ + _) shouldBe vector.reduceRight(_ + _)
+      }
+    })
+  }
 }
