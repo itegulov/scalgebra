@@ -7,8 +7,11 @@ no specialization, no benchmarks. It's as simple as it is should be.
 
 Installation
 ------------
-There is no public distribution yet. Just wait for a little longer.
-
+Just add this to your build.sbt:
+```
+resolvers += Resolver.bintrayRepo("itegulov", "maven")
+libraryDependencies += "me.itegulov" %% "scalgebra" % "0.1"
+```
 Quick start
 -----------
 ```scala

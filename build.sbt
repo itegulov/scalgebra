@@ -1,6 +1,10 @@
 name := "scalgebra"
 
-version := "0.0.1-SNAPSHOT"
+version := "0.1"
+
+licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
+
+organization := "me.itegulov"
 
 scalaVersion := "2.11.8"
 
