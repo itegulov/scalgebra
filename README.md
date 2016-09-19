@@ -8,9 +8,9 @@ no specialization, no benchmarks. It's as simple as it is should be.
 Installation
 ------------
 Just add this to your build.sbt:
-```
+```scala
 resolvers += Resolver.bintrayRepo("itegulov", "maven")
-libraryDependencies += "me.itegulov" %% "scalgebra" % "0.1"
+libraryDependencies += "org.scalgebra" %% "scalgebra" % "0.1"
 ```
 Quick start
 -----------
