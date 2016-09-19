@@ -45,7 +45,7 @@ class DenseVectorProps extends PropSpec with Matchers with GeneratorDrivenProper
   property("can be subtracted from zero vector") {
     forAll((vector: DenseVector[Int]) => {
       vector - DenseVector.zeros(vector.length) shouldBe vector
-      DenseVector.zeros(vector.length) - vector shouldBe DenseVector(vector.valuesIterator.map(i => -i).toArray)
+      DenseVector.zeros(vector.length) - vector shouldBe DenseVector(vector.iterator.map(-_).toArray)
     })
   }
 }

@@ -17,17 +17,10 @@ class VectorProps extends PropSpec with Matchers with GeneratorDrivenPropertyChe
     })
   }
 
-  property("iterator is the same as keyIterator -> valueIterator") {
-    forAll((vector: Vector[Int]) => {
-      val a = vector.keysIterator.zip(vector.valuesIterator)
-      assert(vector.iterator sameElements a)
-    })
-  }
-
   property("string representation contains all elements") {
     forAll((vector: Vector[Int]) => {
       val representation = vector.toString
-      for (i <- 0 until vector.length)
+      for (i <- vector.indices)
         representation.contains(vector(i).toString)
     })
   }
@@ -35,32 +28,32 @@ class VectorProps extends PropSpec with Matchers with GeneratorDrivenPropertyChe
   property("conversion to 2d array contains all elements") {
     forAll((vector: Vector[Int]) => {
       val array = vector.toArray
-      for (i <- 0 until vector.length)
+      for (i <- vector.indices)
         vector(i) shouldBe array(i)
     })
   }
 
   property("all elements in vector exist inside of it") {
     forAll((vector: Vector[Int]) => {
-      for (i <- 0 until vector.length)
-        vector.exists(_ == vector(i)) shouldBe true
+      for (i <- vector.indices)
+        vector.contains(vector(i)) shouldBe true
     })
   }
 
   property("folds are equivalent for addition") {
     forAll((vector: Vector[Int]) => {
-      vector.fold(0)(_ + _) shouldBe vector.toArray.sum
-      vector.fold(0)(_ + _) shouldBe vector.foldLeft(0)(_ + _)
-      vector.fold(0)(_ + _) shouldBe vector.foldRight(0)(_ + _)
+      vector.sum shouldBe vector.toArray.sum
+      vector.sum shouldBe vector.sum
+      vector.sum shouldBe vector.sum
     })
   }
 
   property("reduces are equivalent for addition") {
     forAll((vector: Vector[Int]) => {
-      if (vector.length != 0) {
-        vector.reduce(_ + _) shouldBe vector.toArray.sum
-        vector.reduce(_ + _) shouldBe vector.reduceLeft(_ + _)
-        vector.reduce(_ + _) shouldBe vector.reduceRight(_ + _)
+      if (vector.nonEmpty) {
+        vector.sum shouldBe vector.toArray.sum
+        vector.sum shouldBe vector.sum
+        vector.sum shouldBe vector.sum
       }
     })
   }
