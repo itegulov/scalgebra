@@ -2,6 +2,8 @@ package org.scalgebra
 
 import algebra.ring._
 
+import scala.collection.generic.{CanBuildFrom, GenSeqFactory, GenericCompanion, GenericTraversableTemplate}
+import scala.collection.{SeqLike, mutable}
 import scala.reflect.ClassTag
 
 /**
@@ -12,7 +14,9 @@ import scala.reflect.ClassTag
   *
   * @author Daniyar Itegulov
   */
-final class DenseVector[T](val array: Array[T]) extends Vector[T] {
+final class DenseVector[T](val array: Array[T]) extends Vector[T]
+  with GenericTraversableTemplate[T, DenseVector]
+  with SeqLike[T, DenseVector[T]] {
   override def apply(i: Int): T = {
     if (i <= -length || i >= length) {
       throw new IndexOutOfBoundsException(s"Tried to get $i-th element in vector with $length elements")
@@ -22,6 +26,8 @@ final class DenseVector[T](val array: Array[T]) extends Vector[T] {
   }
 
   override def length: Int = array.length
+
+  override def companion: GenericCompanion[DenseVector] = DenseVector
 }
 
 trait DenseVectorOps {
@@ -104,7 +110,7 @@ trait DenseVectorOps {
   }
 }
 
-object DenseVector {
+object DenseVector extends GenSeqFactory[DenseVector] {
   def apply[V](values: Array[V]): DenseVector[V] =
     new DenseVector[V](values)
 
@@ -115,4 +121,37 @@ object DenseVector {
 
   def ones[V: ClassTag : MultiplicativeMonoid](length: Int): DenseVector[V] =
     apply(Array.fill(length)(implicitly[MultiplicativeMonoid[V]].one))
+
+  override def newBuilder[A]: mutable.Builder[A, DenseVector[A]] =
+    new DenseVectorBuilder[A]()
+
+  implicit def canBuildFrom[A]: CanBuildFrom[Coll, A, DenseVector[A]] =
+    ReusableCBF.asInstanceOf[GenericCanBuildFrom[A]]
+}
+
+
+final class DenseVectorBuilder[T]() extends mutable.Builder[T, DenseVector[T]] {
+  private var innerArray = Array.ofDim[AnyRef](32)
+  private var index = 0
+
+  override def +=(elem: T): this.type = {
+    if (index >= innerArray.length) {
+      val oldArray = innerArray
+      innerArray = Array.ofDim[AnyRef](innerArray.length * 2)
+      oldArray.copyToArray(innerArray)
+    }
+    innerArray(index) = elem.asInstanceOf[AnyRef]
+    this
+  }
+
+  override def clear(): Unit = {
+    innerArray = Array.ofDim[AnyRef](32)
+    index = 0
+  }
+
+  override def result(): DenseVector[T] = {
+    val array = Array.ofDim[AnyRef](index)
+    innerArray.copyToArray(array, 0, index)
+    new DenseVector[T](array.asInstanceOf[Array[T]])
+  }
 }
