@@ -17,13 +17,6 @@ class DenseVectorProps extends PropSpec with Matchers with GeneratorDrivenProper
     })
   }
 
-  property("has negative indexed elements") {
-    forAll((vector: DenseVector[Int]) => {
-      for (i <- 1 until vector.length)
-        vector(-i) shouldBe vector(vector.length - i)
-    })
-  }
-
   property("has no out of bound elements") {
     forAll((vector: DenseVector[Int]) => {
       intercept[IndexOutOfBoundsException] {

@@ -18,11 +18,10 @@ final class DenseVector[T](val array: Array[T]) extends Vector[T]
   with GenericTraversableTemplate[T, DenseVector]
   with SeqLike[T, DenseVector[T]] {
   override def apply(i: Int): T = {
-    if (i <= -length || i >= length) {
+    if (i < 0 || i >= length) {
       throw new IndexOutOfBoundsException(s"Tried to get $i-th element in vector with $length elements")
     }
-    val index = if (i < 0) length + i else i
-    array(index)
+    array(i)
   }
 
   override def length: Int = array.length
