@@ -86,4 +86,10 @@ class DenseVectorSpec extends FlatSpec with Matchers {
       firstVector * secondMatrix
     }
   }
+
+  "A DenseVector" should "be able to zip" in {
+    val firstVector: DenseVector[Int] = DenseVector(1, 2, 3, 4)
+    val secondVector: DenseVector[Int] = DenseVector(5, 6, 7, 8)
+    firstVector.zip(secondVector) shouldBe DenseVector((1, 5), (2, 6), (3, 7), (4, 8))
+  }
 }

@@ -141,6 +141,7 @@ final class DenseVectorBuilder[T]() extends mutable.Builder[T, DenseVector[T]] {
       oldArray.copyToArray(innerArray)
     }
     innerArray(index) = elem.asInstanceOf[AnyRef]
+    index = index + 1
     this
   }
 
