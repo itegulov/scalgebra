@@ -2,8 +2,8 @@ package org.scalgebra
 
 import algebra.ring._
 
-import scala.collection.generic.{CanBuildFrom, GenSeqFactory, GenericCompanion, GenericTraversableTemplate}
-import scala.collection.{SeqLike, mutable}
+import scala.collection.generic._
+import scala.collection.{ mutable, SeqLike }
 import scala.reflect.ClassTag
 
 /**

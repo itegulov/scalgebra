@@ -24,10 +24,10 @@ final class DenseMatrix[T: ClassTag](val array: Array[Array[T]]) extends Matrix[
   }
 
   override def apply(i: Int, j: Int): T = {
-    if (i <= -rows || i >= rows) {
+    if (i < 0 || i >= rows) {
       throw new IndexOutOfBoundsException(s"Tried to get $i-th row in matrix with $rows rows")
     }
-    if (j <= -cols || j >= cols) {
+    if (j < 0 || j >= cols) {
       throw new IndexOutOfBoundsException(s"Tried to get $j-th col in matrix with $cols cols")
     }
     val row = if (i < 0) rows + i else i
@@ -37,7 +37,7 @@ final class DenseMatrix[T: ClassTag](val array: Array[Array[T]]) extends Matrix[
 
   override def flatten(): DenseVector[T] = DenseVector(array.flatten)
 
-  override def transpose(): DenseMatrix[T] = DenseMatrix(colsIterator.map(_.toSeq).toArray)
+  override def transpose(): DenseMatrix[T] = DenseMatrix(colsIterator.map(_.toSeq).toSeq: _*)
 }
 
 trait DenseMatrixOps {
@@ -66,7 +66,7 @@ trait DenseMatrixOps {
         }
         c += 1
       }
-      DenseMatrix(answer)
+      new DenseMatrix(answer)
     }
   }
 
@@ -95,7 +95,28 @@ trait DenseMatrixOps {
         }
         c += 1
       }
-      DenseMatrix(answer)
+      new DenseMatrix(answer)
+    }
+
+    def *(rhs: DenseVector[T]): DenseVector[T] = {
+      if (lhs.cols != rhs.length) {
+        throw new IllegalArgumentException(
+          s"Tried to multiplicate matrix with cols ${lhs.cols} on vector with length ${rhs.length}"
+        )
+      }
+      val answer = Array.fill(lhs.rows)(additiveMonoid.zero)
+      var r = 0
+      while (r < lhs.rows) {
+        var c = 0
+        var result: T = additiveMonoid.zero
+        while (c < lhs.cols) {
+          result = additiveMonoid.plus(result, multiplicativeSemigroup.times(lhs(r, c), rhs(c)))
+          c += 1
+        }
+        answer(r) = result
+        r += 1
+      }
+      DenseVector(answer)
     }
   }
 
@@ -124,15 +145,12 @@ trait DenseMatrixOps {
         }
         c += 1
       }
-      DenseMatrix(answer)
+      new DenseMatrix(answer)
     }
   }
 }
 
 object DenseMatrix {
-  def apply[V: ClassTag, R](rows: Array[R])(implicit r: Row[R, V]): DenseMatrix[V] =
-    apply(rows: _*)
-
   def apply[R, V: ClassTag](rows: R*)(implicit r: Row[R, V]): DenseMatrix[V] = {
     val rowsCount = rows.length
     val colsCount = if (rows.isEmpty) 0 else r.length(rows(0))

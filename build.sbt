@@ -1,6 +1,6 @@
 name := "scalgebra"
 
-version := "0.1-M1"
+version := "0.1-M2"
 
 licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
 
@@ -15,11 +15,11 @@ resolvers ++= Seq(
 scalastyleConfig := file("project/scalastyle-config.xml")
 
 val scalaTestVersion = "3.0.0"
-val algebraVersion = "0.4.2"
+val algebraVersion = "0.5.1"
 
 libraryDependencies ++= Seq(
-  "org.spire-math" %% "algebra" % algebraVersion,
-  "org.spire-math" %% "algebra-std" % algebraVersion,
+  "org.typelevel" %% "algebra" % algebraVersion,
+//  "org.typelevel" %% "algebra-std" % algebraVersion,
   "com.chuusai" %% "shapeless" % "2.3.1",
   "org.scalactic" %% "scalactic" % scalaTestVersion,
   "org.scalatest" %% "scalatest" % scalaTestVersion % "test",

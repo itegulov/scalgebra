@@ -17,7 +17,7 @@ object DenseMatrixGen {
       Gen.sized { cols =>
         for {
           matrix <- Gen.containerOfN[Array, Array[T]](rows, Gen.containerOfN[Array, T](cols, Arbitrary.arbitrary[T]))
-        } yield DenseMatrix(matrix)
+        } yield new DenseMatrix(matrix)
       }
     }
 
@@ -50,8 +50,8 @@ object DenseMatrixGen {
   def genOneColumnMatrix[T: Arbitrary : Ring : ClassTag]: Gen[DenseMatrix[T]] =
     Gen.sized { size =>
       for {
-        matrix <- Gen.containerOfN[Array, Seq[T]](size, Gen.containerOfN[Seq, T](1, Arbitrary.arbitrary[T]))
-      } yield DenseMatrix(matrix)
+        matrix <- Gen.containerOfN[Array, Array[T]](size, Gen.containerOfN[Array, T](1, Arbitrary.arbitrary[T]))
+      } yield new DenseMatrix(matrix)
     }
 
   def genOneElementMatrix[T: Arbitrary : ClassTag]: Gen[DenseMatrix[T]] =

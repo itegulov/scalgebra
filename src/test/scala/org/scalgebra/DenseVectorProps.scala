@@ -2,7 +2,7 @@ package org.scalgebra
 
 import org.scalatest._
 import org.scalatest.prop._
-import algebra.std.int._
+import algebra.instances.int._
 
 import org.scalgebra.generation.DenseVectorGen._
 

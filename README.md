@@ -10,12 +10,12 @@ Installation
 Just add this to your build.sbt:
 ```scala
 resolvers += Resolver.bintrayRepo("itegulov", "maven")
-libraryDependencies += "org.scalgebra" %% "scalgebra" % "0.1"
+libraryDependencies += "org.scalgebra" %% "scalgebra" % "0.1-M2"
 ```
 Quick start
 -----------
 ```scala
-import algebra.std.int._
+import algebra.instances.int._
 import org.scalgebra.DenseMatrix
 
 val a: DenseMatrix[Int] = DenseMatrix((1, 2), (3, 4))

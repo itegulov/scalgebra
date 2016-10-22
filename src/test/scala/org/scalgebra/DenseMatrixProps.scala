@@ -3,7 +3,7 @@ package org.scalgebra
 import org.scalatest._
 import org.scalatest.prop._
 import org.scalacheck.Prop.BooleanOperators
-import algebra.std.int._
+import algebra.instances.int._
 
 import org.scalgebra.generation.DenseMatrixGen._
 
@@ -17,14 +17,6 @@ class DenseMatrixProps extends PropSpec with Matchers with GeneratorDrivenProper
         for (j <- 0 until matrix.cols)
           matrix(i, j)
     })
-  }
-
-  property("has negative indexed elements") {
-    forAll { (matrix: DenseMatrix[Int]) =>
-      for (i <- 1 until matrix.rows)
-        for (j <- 1 until matrix.cols)
-          matrix(-i, -j) shouldBe matrix(matrix.rows - i, matrix.cols - j)
-    }
   }
 
   property("has no out of bound elements") {
@@ -47,6 +39,16 @@ class DenseMatrixProps extends PropSpec with Matchers with GeneratorDrivenProper
         }
       }
     }
+  }
+
+  property("can be multiplied on vector") {
+    forAll((matrix: DenseMatrix[Int], vector: DenseVector[Int]) => {
+      (matrix.cols != vector.length) ==> {
+        val left = new DenseMatrix(Array[Array[Int]]((matrix * vector).array))
+        val right = matrix * new DenseMatrix(Array[Array[Int]](vector.array))
+        left === right
+      }
+    })
   }
 
   property("can be added with zero matrix") {
