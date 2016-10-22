@@ -2,6 +2,8 @@ package org.scalgebra
 
 import algebra.ring.{AdditiveMonoid, MultiplicativeMonoid}
 
+import scala.collection.AbstractSeq
+import scala.language.higherKinds
 import scala.reflect.ClassTag
 
 /**
@@ -9,7 +11,7 @@ import scala.reflect.ClassTag
   *
   * @author Daniyar Itegulov
   */
-trait Matrix[T] extends Tensor[(Int, Int), T] {
+trait Matrix[+V[_] <: Vector[_], T] extends AbstractSeq[V[T]] with Tensor[(Int, Int), T] {
   def apply(key: (Int, Int)): T = apply(key._1, key._2)
 
   def apply(i: Int, j: Int): T
@@ -18,17 +20,13 @@ trait Matrix[T] extends Tensor[(Int, Int), T] {
 
   def cols: Int
 
-  def size: Int = rows * cols
+  def length: Int = cols
 
   // Iterators
 
-  def iterator: Iterator[((Int, Int), T)] =
-    for (i <- Iterator.range(0, rows); j <- Iterator.range(0, cols))
-    yield (i, j) -> apply(i, j)
-
-  def valuesIterator: Iterator[T] =
-    for (i <- Iterator.range(0, rows); j <- Iterator.range(0, cols))
-    yield apply(i, j)
+  override def iterator: Iterator[V[T]] =
+    for (i <- Iterator.range(0, cols))
+      yield apply(i)
 
   def keysIterator: Iterator[(Int, Int)] =
     for (i <- Iterator.range(0, rows); j <- Iterator.range(0, cols))
@@ -46,21 +44,21 @@ trait Matrix[T] extends Tensor[(Int, Int), T] {
 
   // Collection operations
 
-  def exists(predicate: T => Boolean): Boolean = valuesIterator.exists(predicate)
-
-  def forall(predicate: T => Boolean): Boolean = valuesIterator.forall(predicate)
-
-  def fold[U >: T](z: U)(op: (U, U) => U): U = valuesIterator.fold(z)(op)
-
-  def foldLeft[U >: T](z: U)(op: (U, T) => U): U = valuesIterator.foldLeft(z)(op)
-
-  def foldRight[U >: T](z: U)(op: (T, U) => U): U = valuesIterator.foldRight(z)(op)
-
-  def reduce[U >: T](op: (U, U) => U): U = valuesIterator.reduce(op)
-
-  def reduceLeft[U >: T](op: (U, T) => U): U = valuesIterator.reduceLeft(op)
-
-  def reduceRight[U >: T](op: (T, U) => U): U = valuesIterator.reduceRight(op)
+//  def exists(predicate: T => Boolean): Boolean = valuesIterator.exists(predicate)
+//
+//  def forall(predicate: T => Boolean): Boolean = valuesIterator.forall(predicate)
+//
+//  def fold[U >: T](z: U)(op: (U, U) => U): U = valuesIterator.fold(z)(op)
+//
+//  def foldLeft[U >: T](z: U)(op: (U, T) => U): U = valuesIterator.foldLeft(z)(op)
+//
+//  def foldRight[U >: T](z: U)(op: (T, U) => U): U = valuesIterator.foldRight(z)(op)
+//
+//  def reduce[U >: T](op: (U, U) => U): U = valuesIterator.reduce(op)
+//
+//  def reduceLeft[U >: T](op: (U, T) => U): U = valuesIterator.reduceLeft(op)
+//
+//  def reduceRight[U >: T](op: (T, U) => U): U = valuesIterator.reduceRight(op)
 
   // Conversions
 
@@ -101,23 +99,15 @@ trait Matrix[T] extends Tensor[(Int, Int), T] {
     sb.toString
   }
 
-  override def equals(obj: Any): Boolean = obj match {
-    case other: Matrix[_] =>
-      rows == other.rows && cols == other.cols && (valuesIterator sameElements other.valuesIterator)
-    case _ => false
-  }
-
-  override def hashCode(): Int = valuesIterator.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
-
   def flatten(): Vector[T]
 
-  def transpose(): Matrix[T]
+  def transpose(): Matrix[V, T]
 }
 
 object Matrix {
-  def zeros[V: ClassTag : AdditiveMonoid](n: Int, m: Int): Matrix[V] = DenseMatrix.zeros(n, m)
+  def zeros[V: ClassTag : AdditiveMonoid](n: Int, m: Int): Matrix[Vector, V] = DenseMatrix.zeros(n, m)
 
-  def ones[V: ClassTag : MultiplicativeMonoid](n: Int, m: Int): Matrix[V] = DenseMatrix.ones(n, m)
+  def ones[V: ClassTag : MultiplicativeMonoid](n: Int, m: Int): Matrix[Vector, V] = DenseMatrix.ones(n, m)
 
-  def unit[V: ClassTag : MultiplicativeMonoid : AdditiveMonoid](n: Int): Matrix[V] = DenseMatrix.unit(n)
+  def unit[V: ClassTag : MultiplicativeMonoid : AdditiveMonoid](n: Int): Matrix[Vector, V] = DenseMatrix.unit(n)
 }

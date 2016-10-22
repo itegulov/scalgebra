@@ -2,7 +2,7 @@ package org.scalgebra.generation
 
 import algebra.ring.Ring
 import org.scalacheck.{Arbitrary, Gen}
-import org.scalgebra.{DenseMatrix, Matrix}
+import org.scalgebra.{DenseMatrix, Matrix, Vector}
 
 import scala.reflect.ClassTag
 
@@ -10,28 +10,28 @@ import scala.reflect.ClassTag
   * @author Daniyar Itegulov
   */
 object MatrixGen {
-  def genUnitMatrix[T: Ring : ClassTag]: Gen[Matrix[T]] =
+  def genUnitMatrix[T: Ring : ClassTag]: Gen[Matrix[Vector, T]] =
     Gen.sized { size =>
       Gen.const(Matrix.unit(size))
     }
 
-  def genZeroMatrix[T: Ring : ClassTag]: Gen[Matrix[T]] =
+  def genZeroMatrix[T: Ring : ClassTag]: Gen[Matrix[Vector, T]] =
     Gen.sized { rows =>
       Gen.sized { cols =>
         Gen.const(Matrix.zeros[T](rows, cols))
       }
     }
 
-  def genOneMatrix[T: Ring : ClassTag]: Gen[Matrix[T]] =
+  def genOneMatrix[T: Ring : ClassTag]: Gen[Matrix[Vector, T]] =
     Gen.sized { rows =>
       Gen.sized { cols =>
         Gen.const(Matrix.ones[T](rows, cols))
       }
     }
 
-  implicit def arbitraryRingMatrix[T: Arbitrary : Ring : ClassTag]: Arbitrary[Matrix[T]] =
+  implicit def arbitraryRingMatrix[T: Arbitrary : Ring : ClassTag]: Arbitrary[Matrix[Vector, T]] =
     Arbitrary {
-      Gen.frequency[Matrix[T]](
+      Gen.frequency[Matrix[Vector, T]](
         (80, DenseMatrixGen.genRingDenseMatrix),
         (5, DenseMatrixGen.genOneRowedMatrix),
         (5, DenseMatrixGen.genOneColumnMatrix),

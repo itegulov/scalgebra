@@ -3,9 +3,15 @@ package org.scalgebra
 import algebra.ring._
 import org.scalgebra.util.Row
 
+import scala.collection.{AbstractSeq, SeqLike, mutable}
+import scala.collection.generic.{GenSeqFactory, GenericTraversableTemplate}
 import scala.language.experimental.macros
 import scala.language.implicitConversions
 import scala.reflect.ClassTag
+
+object Shto {
+  type Chto[T] = Matrix[DenseVector, T]
+}
 
 /**
   * Represents dense (high ratio of non-zero values in DenseMatrix) matrices
@@ -15,9 +21,11 @@ import scala.reflect.ClassTag
   *
   * @author Daniyar Itegulov
   */
-final class DenseMatrix[T: ClassTag](val array: Array[Array[T]]) extends Matrix[T] {
+final class DenseMatrix[T](val array: Array[Array[T]]) extends Matrix[DenseVector, T]
+    with GenericTraversableTemplate[DenseVector[T], Shto.Chto] {
   override val rows = array.length
   override val cols = if (rows == 0) 0 else array.head.length
+  private lazy val colVectors = array.transpose.map(DenseVector(_))
 
   if (!array.forall(row => row.length == cols)) {
     throw new IllegalArgumentException("Not all rows have equal number of columns")
@@ -35,9 +43,11 @@ final class DenseMatrix[T: ClassTag](val array: Array[Array[T]]) extends Matrix[
     array(row)(col)
   }
 
-  override def flatten(): DenseVector[T] = DenseVector(array.flatten)
+  override def apply(index: Int): DenseVector[T] = colVectors(index)
 
-  override def transpose(): DenseMatrix[T] = DenseMatrix(colsIterator.map(_.toSeq).toArray)
+  override def flatten(): DenseVector[T] = ???
+
+  override def transpose(): DenseMatrix[T] = ???
 }
 
 trait DenseMatrixOps {
@@ -129,7 +139,7 @@ trait DenseMatrixOps {
   }
 }
 
-object DenseMatrix {
+object DenseMatrix extends GenSeqFactory[DenseMatrix] {
   def apply[V: ClassTag, R](rows: Array[R])(implicit r: Row[R, V]): DenseMatrix[V] =
     apply(rows: _*)
 
@@ -159,4 +169,29 @@ object DenseMatrix {
       array(i)(i) = multMonoid.one
     new DenseMatrix[V](array)
   }
+
+  override def newBuilder[A]: mutable.Builder[A, DenseMatrix[A]] = ???
+}
+
+private final class DenseMatrixBuilder[T] extends mutable.Builder[DenseVector[T], DenseMatrix[T]] {
+  private var buffer = mutable.ArrayBuffer.empty[DenseVector[T]]
+
+  private def unsafeToArray[A](seq: Seq[A]): Array[A] = {
+    val unsafeArray = Array.ofDim[AnyRef](seq.size)
+    for (i <- seq.indices)
+      unsafeArray(i) = seq(i).asInstanceOf[AnyRef]
+    unsafeArray.asInstanceOf[Array[A]]
+  }
+
+  override def +=(elem: DenseVector[T]): this.type = {
+    buffer += elem
+    this
+  }
+
+  override def clear(): Unit = {
+    buffer.clear()
+  }
+
+  override def result(): DenseMatrix[T] =
+    new DenseMatrix[T](unsafeToArray(buffer.map(unsafeToArray)))
 }

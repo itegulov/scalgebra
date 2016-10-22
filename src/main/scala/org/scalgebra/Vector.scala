@@ -10,7 +10,7 @@ import scala.reflect.ClassTag
   *
   * @author Daniyar Itegulov
   */
-trait Vector[T] extends AbstractSeq[T] with Tensor[Int, T] {
+trait Vector[+T] extends AbstractSeq[T] with Tensor[Int, T] {
   def iterator: Iterator[T] = Iterator.range(0, length).map(apply)
 
   override def toString: String = {

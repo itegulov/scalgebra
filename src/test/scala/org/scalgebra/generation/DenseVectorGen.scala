@@ -37,10 +37,10 @@ object DenseVectorGen {
   implicit def arbitraryRingDenseVector[T: Arbitrary : Ring : ClassTag]: Arbitrary[DenseVector[T]] =
     Arbitrary {
       Gen.frequency(
-        (85, genSemiringDenseVector),
-        (5, genZeroDenseVector),
-        (5, genOneDenseVector),
-        (5, genUnitDenseVector)
+        (85, genSemiringDenseVector[T]),
+        (5, genZeroDenseVector[T]),
+        (5, genOneDenseVector[T]),
+        (5, genUnitDenseVector[T])
       )
     }
 }

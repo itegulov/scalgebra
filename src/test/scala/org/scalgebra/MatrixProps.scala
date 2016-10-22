@@ -11,43 +11,35 @@ import org.scalgebra.generation.MatrixGen._
   */
 class MatrixProps extends PropSpec with Matchers with GeneratorDrivenPropertyChecks {
   property("hash code and equals properties are kept") {
-    forAll((a: Matrix[Int], b: Matrix[Int]) => {
+    forAll((a: Matrix[Vector, Int], b: Matrix[Vector, Int]) => {
       if (a.hashCode != b.hashCode) a should not be b
       if (a == b) a.hashCode shouldBe b.hashCode
     })
   }
 
-  property("iterator is the same as keyIterator -> valueIterator") {
-    forAll((matrix: Matrix[Int]) => {
-      val a = matrix.keysIterator.zip(matrix.valuesIterator)
-      assert(matrix.iterator sameElements a)
-    })
-  }
-
   property("iterators have all elements") {
-    forAll((matrix: Matrix[Int]) => {
-      matrix.iterator.size shouldBe matrix.size
-      matrix.valuesIterator.size shouldBe matrix.size
-      matrix.keysIterator.size shouldBe matrix.size
+    forAll((matrix: Matrix[Vector, Int]) => {
+      matrix.iterator.size shouldBe matrix.cols
+      matrix.keysIterator.size shouldBe matrix.cols * matrix.rows
     })
   }
 
   property("colsIterator has all elements") {
-    forAll((matrix: Matrix[Int]) => {
+    forAll((matrix: Matrix[Vector, Int]) => {
       val colsIteratorElements = matrix.colsIterator.flatten.toSet
       assert(matrix.flatten().forall(colsIteratorElements.contains))
     })
   }
 
   property("rowsIterator has all elements") {
-    forAll((matrix: Matrix[Int]) => {
+    forAll((matrix: Matrix[Vector, Int]) => {
       val rowsIteratorElements = matrix.rowsIterator.flatten.toSet
       assert(matrix.flatten().forall(rowsIteratorElements.contains))
     })
   }
 
   property("string representation contains all elements") {
-    forAll((matrix: Matrix[Int]) => {
+    forAll((matrix: Matrix[Vector, Int]) => {
       val representation = matrix.toString
       for (i <- 0 until matrix.rows)
         for (j <- 0 until matrix.cols)
@@ -56,7 +48,7 @@ class MatrixProps extends PropSpec with Matchers with GeneratorDrivenPropertyChe
   }
 
   property("conversion to 2d array contains all elements") {
-    forAll((matrix: Matrix[Int]) => {
+    forAll((matrix: Matrix[Vector, Int]) => {
       val array = matrix.to2DArray
       for (i <- 0 until matrix.rows)
         for (j <- 0 until matrix.cols)
